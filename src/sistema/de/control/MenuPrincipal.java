@@ -9,6 +9,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+import sistema.de.control.DAO.ProductosDaoImpl;
+import sistema.de.control.modelos.Producto;
 
 /**
  *
@@ -20,13 +24,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
      * Creates new form MenuPrincipal
      */
     
-    public enum SeccionSeleccionada {
+    public enum Seccion {
         VENTAS,
         PRODUCTOS,
         CLIENTES
     }
     
-    SeccionSeleccionada seccionSeleccionada = SeccionSeleccionada.VENTAS;
+   Seccion seccionSeleccionada = Seccion.PRODUCTOS;
+   ArrayList<Producto> productos = new ArrayList<>();
     
     public MenuPrincipal() {
         initComponents();
@@ -35,13 +40,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
         Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
+        jScrollPane1.getViewport().setBackground(new Color(74,78,105));
         
+        cambiarSeleccion(seccionSeleccionada);
         
         System.out.println("#Menu principal inicializado correctamente");
         
     }
     
-    private void cambiarSeleccion(SeccionSeleccionada seccionSeleccionada) {
+    private void cambiarSeleccion(Seccion seccionSeleccionada) {        
         this.seccionSeleccionada = seccionSeleccionada;
         System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
         switch(seccionSeleccionada) {
@@ -49,6 +56,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 ventasBtn.setBackground(new Color(74, 78, 105));
                 productosBtn.setBackground(new Color(34,34,59));
                 clientesBtn.setBackground(new Color(34,34,59));
+                actualizarSeccion(seccionSeleccionada);
                 break;
             }
             
@@ -56,6 +64,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 productosBtn.setBackground(new Color(74, 78, 105));
                 ventasBtn.setBackground(new Color(34,34,59));
                 clientesBtn.setBackground(new Color(34,34,59));
+                actualizarSeccion(seccionSeleccionada);
                 break;
             }
             
@@ -63,11 +72,39 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 clientesBtn.setBackground(new Color(74, 78, 105));
                 ventasBtn.setBackground(new Color(34,34,59));
                 productosBtn.setBackground(new Color(34,34,59));
+                actualizarSeccion(seccionSeleccionada);
                 break;
             }
             
             default: break;
         }
+    }
+    
+    private void actualizarSeccion(Seccion seccion) {
+        DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
+        switch(seccion) {
+            case VENTAS:
+                model.setRowCount(0);
+                break;
+            case PRODUCTOS:
+                ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
+                productos = null;
+                productos = accesoProductos.getProductos();
+                
+                model = (DefaultTableModel) mainTable.getModel();
+                model.setRowCount(0);
+                for(Producto producto : productos) {
+                    model.addRow(new Object[]{producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCantidad()});
+                    System.out.println(producto.getNombre());
+                }
+                break;
+            case CLIENTES:
+                model.setRowCount(0);
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**
@@ -85,10 +122,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
         clientesBtn = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        mainTable = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(154, 140, 152));
         setBounds(new java.awt.Rectangle(1, 1, 1, 1));
+        setPreferredSize(new java.awt.Dimension(900, 600));
         setSize(new java.awt.Dimension(900, 600));
 
         jPanel1.setBackground(new java.awt.Color(34, 34, 59));
@@ -170,24 +214,108 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jPanel2.setForeground(new java.awt.Color(154, 140, 152));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(74, 78, 105));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ventas");
+
+        jScrollPane1.setBackground(new java.awt.Color(242, 233, 228));
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
+
+        mainTable.setBackground(new java.awt.Color(74, 78, 105));
+        mainTable.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
+        mainTable.setForeground(new java.awt.Color(242, 233, 228));
+        mainTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Nombre", "Descripcion", "Cantidad"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        mainTable.setFocusable(false);
+        mainTable.setGridColor(new java.awt.Color(242, 233, 228));
+        mainTable.setOpaque(false);
+        mainTable.setSelectionBackground(new java.awt.Color(154, 140, 152));
+        mainTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        mainTable.setShowHorizontalLines(false);
+        mainTable.setShowVerticalLines(false);
+        mainTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(mainTable);
+        if (mainTable.getColumnModel().getColumnCount() > 0) {
+            mainTable.getColumnModel().getColumn(0).setResizable(false);
+            mainTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+            mainTable.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        jButton1.setText("Opcion1");
+
+        jButton2.setText("Opcion2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Opcion3");
+
+        jButton4.setText("Opcion4");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(254, 254, 254)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(286, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 759, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(169, 169, 169)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(206, 206, 206)
+                        .addComponent(jButton2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(242, 242, 242)
+                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(76, 76, 76)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
+                .addGap(33, 33, 33))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -196,8 +324,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 1, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +343,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_ventasBtnMouseEntered
 
     private void ventasBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseExited
-        if(seccionSeleccionada != SeccionSeleccionada.VENTAS) {
+        if(seccionSeleccionada != Seccion.VENTAS) {
             ventasBtn.setBackground(new Color(34,34,59));
         }
     }//GEN-LAST:event_ventasBtnMouseExited
@@ -224,7 +353,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_productosBtnMouseEntered
 
     private void productosBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseExited
-        if(seccionSeleccionada != SeccionSeleccionada.PRODUCTOS) {
+        if(seccionSeleccionada != Seccion.PRODUCTOS) {
             productosBtn.setBackground(new Color(34,34,59));
         }
     }//GEN-LAST:event_productosBtnMouseExited
@@ -234,7 +363,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_clientesBtnMouseEntered
 
     private void clientesBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseExited
-        if(seccionSeleccionada != SeccionSeleccionada.CLIENTES) {
+        if(seccionSeleccionada != Seccion.CLIENTES) {
             clientesBtn.setBackground(new Color(34,34,59));
         }
     }//GEN-LAST:event_clientesBtnMouseExited
@@ -242,7 +371,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void ventasBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseClicked
        jLabel1.setText("Ventas");
        
-       seccionSeleccionada = SeccionSeleccionada.VENTAS;
+       seccionSeleccionada = Seccion.VENTAS;
        
        cambiarSeleccion(seccionSeleccionada);
     }//GEN-LAST:event_ventasBtnMouseClicked
@@ -250,7 +379,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void productosBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseClicked
         jLabel1.setText("Productos");
         
-        seccionSeleccionada = SeccionSeleccionada.PRODUCTOS;
+        seccionSeleccionada = Seccion.PRODUCTOS;
         cambiarSeleccion(seccionSeleccionada);
 
     }//GEN-LAST:event_productosBtnMouseClicked
@@ -258,38 +387,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void clientesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseClicked
         jLabel1.setText("Clientes");
         
-        seccionSeleccionada = SeccionSeleccionada.CLIENTES;
+        seccionSeleccionada = Seccion.CLIENTES;
         cambiarSeleccion(seccionSeleccionada);
-
+        
     }//GEN-LAST:event_clientesBtnMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -301,9 +413,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable mainTable;
     private javax.swing.JLabel productosBtn;
     private javax.swing.JLabel ventasBtn;
     // End of variables declaration//GEN-END:variables
