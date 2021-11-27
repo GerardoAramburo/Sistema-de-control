@@ -34,6 +34,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     
      Seccion seccionSeleccionada = Seccion.PRODUCTOS;
      ArrayList<Producto> productos = new ArrayList<>();
+     ArrayList<Object> clientes = new ArrayList<>();
+     ArrayList<Object> ventas = new ArrayList<>();
      String tema = "Claro";
     /**
      * Creates new form MenuPrincipal
@@ -45,12 +47,30 @@ public class MenuPrincipal extends javax.swing.JFrame {
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
         
-        cambiarSeleccion(seccionSeleccionada);
 
         centrarColumna(0);
         centrarColumna(3);
         
         temaCb.setSelectedItem(tema);
+        
+        System.out.println("#Menu principal inicializado correctamente");
+    }
+    
+        public MenuPrincipal(String tema, ArrayList<Producto> productos, Seccion seccionSeleccionada) {
+        this.tema = tema;
+        this.seccionSeleccionada = seccionSeleccionada;
+        this.productos = productos;
+        initComponents();
+        Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+        Dimension tamanoVentana = this.getSize();
+        this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
+        
+
+        centrarColumna(0);
+        centrarColumna(3);
+        
+        temaCb.setSelectedItem(tema);
+        
 
         System.out.println("#Menu principal inicializado correctamente");
     }
@@ -59,6 +79,33 @@ public class MenuPrincipal extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         mainTable.getColumnModel().getColumn(index).setCellRenderer( centerRenderer );
+    }
+    
+    private void cambiarSeccionSinRecargarDB() {
+            switch(seccionSeleccionada) {
+            case VENTAS: {
+                ventasBtn.setBackground(new Color(74, 78, 105));
+                productosBtn.setBackground(new Color(34,34,59));
+                clientesBtn.setBackground(new Color(34,34,59));
+                break;
+            }
+            
+            case PRODUCTOS: {
+                productosBtn.setBackground(new Color(74, 78, 105));
+                ventasBtn.setBackground(new Color(34,34,59));
+                clientesBtn.setBackground(new Color(34,34,59));
+                break;
+            }
+            
+            case CLIENTES: {
+                clientesBtn.setBackground(new Color(74, 78, 105));
+                ventasBtn.setBackground(new Color(34,34,59));
+                productosBtn.setBackground(new Color(34,34,59));
+                break;
+            }
+            
+            default: break;
+        }
     }
     
     private void cambiarSeleccion(Seccion seccionSeleccionada) {        
@@ -106,9 +153,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 
                 model = (DefaultTableModel) mainTable.getModel();
                 model.setRowCount(0);
-                for(Producto producto : productos) {
-                    model.addRow(new Object[]{producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCantidad()});
-                }
+                rellenarTabla(productos, model);
                 break;
             case CLIENTES:
                 model.setRowCount(0);
@@ -117,6 +162,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
         }
 
+    }
+    
+    private void rellenarTabla(ArrayList<Producto> productos, DefaultTableModel model) {
+        for(Producto producto : productos) {
+            model.addRow(new Object[]{producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCantidad()});
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -143,6 +194,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(900, 600));
         setPreferredSize(new java.awt.Dimension(900, 630));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ventasBtn.setBackground(new java.awt.Color(74, 78, 105));
@@ -337,10 +393,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
             } else {
                 FlatDarkLaf.setup();
             }
+
             this.dispose();
-            new MenuPrincipal(temaSeleccionado).setVisible(true);
+            new MenuPrincipal(temaSeleccionado, productos, seccionSeleccionada).setVisible(true);
         }
     }//GEN-LAST:event_temaCbActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+         cambiarSeccionSinRecargarDB();
+         if (productos.size() == 0 && ventas.size() == 0 && clientes.size() == 0) {
+             actualizarSeccion(seccionSeleccionada);
+         } else {
+             rellenarTabla(productos, (DefaultTableModel) mainTable.getModel());
+         }
+    }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
