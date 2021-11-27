@@ -18,7 +18,8 @@ public class Producto {
     private int cantidad;
     //private Image imagen; //Implementar despues
 
-    public Producto(String nombre, String descripcion, int cantidad) {
+    public Producto(int id, String nombre, String descripcion, int cantidad) {
+        this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.cantidad = cantidad;

@@ -66,7 +66,7 @@ public class ProductosDaoImpl implements IProductosDao{
                 String nombre = respuesta.getString("nombre");
                 String descripcion = respuesta.getString("descripcion");
                 int cantidad = respuesta.getInt("cantidad");
-                Producto producto = new Producto(nombre, descripcion, cantidad);
+                Producto producto = new Producto(id, nombre, descripcion, cantidad);
                 
                 productos.add(producto);
             }

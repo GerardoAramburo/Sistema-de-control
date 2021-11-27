@@ -10,7 +10,12 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import sistema.de.control.DAO.ProductosDaoImpl;
 import sistema.de.control.modelos.Producto;
 
@@ -43,9 +48,18 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jScrollPane1.getViewport().setBackground(new Color(74,78,105));
         
         cambiarSeleccion(seccionSeleccionada);
-        
+
+        centrarColumna(0);
+        centrarColumna(3);
+
         System.out.println("#Menu principal inicializado correctamente");
         
+    }
+    
+    private void centrarColumna(int index) {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        mainTable.getColumnModel().getColumn(index).setCellRenderer( centerRenderer );
     }
     
     private void cambiarSeleccion(Seccion seccionSeleccionada) {        
@@ -95,7 +109,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 model.setRowCount(0);
                 for(Producto producto : productos) {
                     model.addRow(new Object[]{producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCantidad()});
-                    System.out.println(producto.getNombre());
                 }
                 break;
             case CLIENTES:
@@ -132,7 +145,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(154, 140, 152));
         setBounds(new java.awt.Rectangle(1, 1, 1, 1));
-        setPreferredSize(new java.awt.Dimension(900, 600));
         setSize(new java.awt.Dimension(900, 600));
 
         jPanel1.setBackground(new java.awt.Color(34, 34, 59));
@@ -216,7 +228,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(74, 78, 105));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Ventas");
+        jLabel1.setText("Productos");
 
         jScrollPane1.setBackground(new java.awt.Color(242, 233, 228));
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -248,6 +260,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        mainTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mainTable.setFocusable(false);
         mainTable.setGridColor(new java.awt.Color(242, 233, 228));
         mainTable.setOpaque(false);
@@ -258,9 +271,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
         mainTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(mainTable);
         if (mainTable.getColumnModel().getColumnCount() > 0) {
-            mainTable.getColumnModel().getColumn(0).setResizable(false);
-            mainTable.getColumnModel().getColumn(0).setPreferredWidth(10);
-            mainTable.getColumnModel().getColumn(3).setResizable(false);
+            mainTable.getColumnModel().getColumn(0).setMinWidth(20);
+            mainTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+            mainTable.getColumnModel().getColumn(0).setMaxWidth(120);
+            mainTable.getColumnModel().getColumn(1).setMinWidth(30);
+            mainTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+            mainTable.getColumnModel().getColumn(1).setMaxWidth(350);
+            mainTable.getColumnModel().getColumn(3).setMinWidth(20);
+            mainTable.getColumnModel().getColumn(3).setPreferredWidth(60);
+            mainTable.getColumnModel().getColumn(3).setMaxWidth(120);
         }
 
         jButton1.setText("Opcion1");
