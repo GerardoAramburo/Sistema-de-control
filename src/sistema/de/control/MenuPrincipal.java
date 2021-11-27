@@ -4,20 +4,20 @@
  * and open the template in the editor.
  */
 package sistema.de.control;
-
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.util.ArrayList;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import sistema.de.control.DAO.ProductosDaoImpl;
 import sistema.de.control.modelos.Producto;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -25,37 +25,36 @@ import sistema.de.control.modelos.Producto;
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MenuPrincipal
-     */
-    
     public enum Seccion {
         VENTAS,
         PRODUCTOS,
         CLIENTES
     }
     
-   Seccion seccionSeleccionada = Seccion.PRODUCTOS;
-   ArrayList<Producto> productos = new ArrayList<>();
     
-    public MenuPrincipal() {
+     Seccion seccionSeleccionada = Seccion.PRODUCTOS;
+     ArrayList<Producto> productos = new ArrayList<>();
+     String tema = "Claro";
+    /**
+     * Creates new form MenuPrincipal
+     */
+    public MenuPrincipal(String tema) {
+        this.tema = tema;
         initComponents();
-        this.setResizable(false);
-        
         Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
-        jScrollPane1.getViewport().setBackground(new Color(74,78,105));
         
         cambiarSeleccion(seccionSeleccionada);
 
         centrarColumna(0);
         centrarColumna(3);
+        
+        temaCb.setSelectedItem(tema);
 
         System.out.println("#Menu principal inicializado correctamente");
-        
     }
-    
+
     private void centrarColumna(int index) {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
@@ -119,7 +118,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
 
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -129,25 +127,23 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         ventasBtn = new javax.swing.JLabel();
         productosBtn = new javax.swing.JLabel();
         clientesBtn = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         mainTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        temaCb = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(154, 140, 152));
-        setBounds(new java.awt.Rectangle(1, 1, 1, 1));
-        setSize(new java.awt.Dimension(900, 600));
-
-        jPanel1.setBackground(new java.awt.Color(34, 34, 59));
+        setMaximumSize(new java.awt.Dimension(900, 650));
+        setMinimumSize(new java.awt.Dimension(900, 600));
+        setPreferredSize(new java.awt.Dimension(900, 630));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ventasBtn.setBackground(new java.awt.Color(74, 78, 105));
         ventasBtn.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
@@ -155,7 +151,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         ventasBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ventasBtn.setText("Ventas");
         ventasBtn.setToolTipText("");
+        ventasBtn.setMaximumSize(new java.awt.Dimension(53, 200));
+        ventasBtn.setMinimumSize(new java.awt.Dimension(53, 200));
         ventasBtn.setOpaque(true);
+        ventasBtn.setPreferredSize(new java.awt.Dimension(53, 200));
         ventasBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ventasBtnMouseClicked(evt);
@@ -167,13 +166,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 ventasBtnMouseExited(evt);
             }
         });
+        getContentPane().add(ventasBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 140, 200));
 
         productosBtn.setBackground(new java.awt.Color(34, 34, 59));
         productosBtn.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
         productosBtn.setForeground(new java.awt.Color(243, 242, 228));
         productosBtn.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         productosBtn.setText("Productos");
+        productosBtn.setMaximumSize(new java.awt.Dimension(53, 200));
+        productosBtn.setMinimumSize(new java.awt.Dimension(53, 200));
         productosBtn.setOpaque(true);
+        productosBtn.setPreferredSize(new java.awt.Dimension(53, 200));
         productosBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 productosBtnMouseClicked(evt);
@@ -185,6 +188,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 productosBtnMouseExited(evt);
             }
         });
+        getContentPane().add(productosBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 140, 200));
 
         clientesBtn.setBackground(new java.awt.Color(34, 34, 59));
         clientesBtn.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
@@ -203,40 +207,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 clientesBtnMouseExited(evt);
             }
         });
+        getContentPane().add(clientesBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 400, 140, 200));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(productosBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-            .addComponent(ventasBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(clientesBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(ventasBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(productosBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(clientesBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jPanel2.setBackground(new java.awt.Color(242, 233, 228));
-        jPanel2.setForeground(new java.awt.Color(154, 140, 152));
-
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 48)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(74, 78, 105));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Productos");
-
-        jScrollPane1.setBackground(new java.awt.Color(242, 233, 228));
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
-
-        mainTable.setBackground(new java.awt.Color(74, 78, 105));
-        mainTable.setFont(new java.awt.Font("Ebrima", 0, 18)); // NOI18N
-        mainTable.setForeground(new java.awt.Color(242, 233, 228));
         mainTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -246,115 +218,66 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
         });
-        mainTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        mainTable.setFocusable(false);
-        mainTable.setGridColor(new java.awt.Color(242, 233, 228));
-        mainTable.setOpaque(false);
-        mainTable.setSelectionBackground(new java.awt.Color(154, 140, 152));
-        mainTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        mainTable.setShowHorizontalLines(false);
-        mainTable.setShowVerticalLines(false);
-        mainTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(mainTable);
         if (mainTable.getColumnModel().getColumnCount() > 0) {
             mainTable.getColumnModel().getColumn(0).setMinWidth(20);
             mainTable.getColumnModel().getColumn(0).setPreferredWidth(40);
             mainTable.getColumnModel().getColumn(0).setMaxWidth(120);
-            mainTable.getColumnModel().getColumn(1).setMinWidth(30);
-            mainTable.getColumnModel().getColumn(1).setPreferredWidth(100);
-            mainTable.getColumnModel().getColumn(1).setMaxWidth(350);
+            mainTable.getColumnModel().getColumn(1).setMinWidth(40);
+            mainTable.getColumnModel().getColumn(1).setPreferredWidth(130);
+            mainTable.getColumnModel().getColumn(1).setMaxWidth(250);
+            mainTable.getColumnModel().getColumn(2).setMinWidth(40);
             mainTable.getColumnModel().getColumn(3).setMinWidth(20);
             mainTable.getColumnModel().getColumn(3).setPreferredWidth(60);
             mainTable.getColumnModel().getColumn(3).setMaxWidth(120);
         }
 
-        jButton1.setText("Opcion1");
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 80, 740, 340));
 
-        jButton2.setText("Opcion2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Productos");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 10, 760, -1));
+
+        temaCb.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Claro", "Oscuro" }));
+        temaCb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                temaCbActionPerformed(evt);
             }
         });
+        getContentPane().add(temaCb, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 20, -1, -1));
 
-        jButton3.setText("Opcion3");
+        jLabel2.setText("Tema: ");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 20, -1, -1));
 
-        jButton4.setText("Opcion4");
+        jButton1.setText("Opcion 1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 460, -1, -1));
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 759, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(169, 169, 169)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(206, 206, 206)
-                        .addComponent(jButton2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
-                .addGap(33, 33, 33))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 1, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        jButton2.setText("Opcion 2");
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 460, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ventasBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseClicked
+        jLabel1.setText("Ventas");
+
+        seccionSeleccionada = Seccion.VENTAS;
+
+        cambiarSeleccion(seccionSeleccionada);
+    }//GEN-LAST:event_ventasBtnMouseClicked
 
     private void ventasBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseEntered
 
@@ -367,6 +290,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ventasBtnMouseExited
 
+    private void productosBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseClicked
+        jLabel1.setText("Productos");
+
+        seccionSeleccionada = Seccion.PRODUCTOS;
+        cambiarSeleccion(seccionSeleccionada);
+    }//GEN-LAST:event_productosBtnMouseClicked
+
     private void productosBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseEntered
         productosBtn.setBackground(new Color(74, 78, 105));
     }//GEN-LAST:event_productosBtnMouseEntered
@@ -376,6 +306,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
             productosBtn.setBackground(new Color(34,34,59));
         }
     }//GEN-LAST:event_productosBtnMouseExited
+
+    private void clientesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseClicked
+        jLabel1.setText("Clientes");
+
+        seccionSeleccionada = Seccion.CLIENTES;
+        cambiarSeleccion(seccionSeleccionada);
+
+    }//GEN-LAST:event_clientesBtnMouseClicked
 
     private void clientesBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseEntered
         clientesBtn.setBackground(new Color(74, 78, 105));
@@ -387,61 +325,33 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_clientesBtnMouseExited
 
-    private void ventasBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseClicked
-       jLabel1.setText("Ventas");
-       
-       seccionSeleccionada = Seccion.VENTAS;
-       
-       cambiarSeleccion(seccionSeleccionada);
-    }//GEN-LAST:event_ventasBtnMouseClicked
-
-    private void productosBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseClicked
-        jLabel1.setText("Productos");
-        
-        seccionSeleccionada = Seccion.PRODUCTOS;
-        cambiarSeleccion(seccionSeleccionada);
-
-    }//GEN-LAST:event_productosBtnMouseClicked
-
-    private void clientesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseClicked
-        jLabel1.setText("Clientes");
-        
-        seccionSeleccionada = Seccion.CLIENTES;
-        cambiarSeleccion(seccionSeleccionada);
-        
-    }//GEN-LAST:event_clientesBtnMouseClicked
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MenuPrincipal().setVisible(true);
+    private void temaCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_temaCbActionPerformed
+        String temaSeleccionado = ((JComboBox)evt.getSource()).getSelectedItem().toString();
+        if(!(tema == temaSeleccionado)) {
+            if (temaSeleccionado == "Claro") {
+                FlatLightLaf.setup();
+            } else {
+                FlatDarkLaf.setup();
             }
-        });
-    }
+            this.dispose();
+            new MenuPrincipal(temaSeleccionado).setVisible(true);
+        }
+    }//GEN-LAST:event_temaCbActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable mainTable;
     private javax.swing.JLabel productosBtn;
+    private javax.swing.JComboBox<String> temaCb;
     private javax.swing.JLabel ventasBtn;
     // End of variables declaration//GEN-END:variables
 }
