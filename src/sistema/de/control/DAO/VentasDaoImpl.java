@@ -44,6 +44,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
 
                 ventas.add(venta);
             }
+            conexion.close();
             return ventas;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
@@ -74,7 +75,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
             float precio = respuesta.getFloat("Precio");
             String tipoPago = respuesta.getString("TipoPago");
             Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
-
+            conexion.close();
             return venta;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");

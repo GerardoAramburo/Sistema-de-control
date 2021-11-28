@@ -41,6 +41,7 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
 
                 productos.add(producto);
             }
+            conexion.close();
             return productos;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
@@ -70,7 +71,8 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
             int cantidad = respuesta.getInt("cantidad");
 
             Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
-
+            
+            conexion.close();
             return producto;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");

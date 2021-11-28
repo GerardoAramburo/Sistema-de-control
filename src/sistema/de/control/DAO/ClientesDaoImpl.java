@@ -41,6 +41,7 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
 
                 clientes.add(cliente);
             }
+            conexion.close();
             return clientes;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
