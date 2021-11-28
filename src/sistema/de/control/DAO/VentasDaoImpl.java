@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sistema.de.control.modelos.Producto;
+import sistema.de.control.modelos.Venta;
 
 /**
  *
  * @author Gerardo
  */
-public class ProductosDaoImpl implements IProductosDao {
+public class VentasDaoImpl implements IVentasDao {
 
     private String dbHost = "jdbc:mysql://sql5.freemysqlhosting.net/";
     private String dbNombre = "sql5453807";
@@ -31,7 +31,7 @@ public class ProductosDaoImpl implements IProductosDao {
     private boolean conectado = false;
     private Statement statement;
 
-    public ProductosDaoImpl() {
+    public VentasDaoImpl() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (Exception e) {
@@ -52,43 +52,45 @@ public class ProductosDaoImpl implements IProductosDao {
     }
 
     @Override
-    public ArrayList<Producto> getProductos() {
+    public ArrayList<Venta> getVentas() {
         if (!conectado) {
             conectarDB();
         }
         try {
-            ArrayList<Producto> productos = new ArrayList<>();
+            ArrayList<Venta> ventas = new ArrayList<>();
 
-            String consulta = "SELECT * FROM Productos";
+            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID";
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
             while (respuesta.next()) {
                 int id = respuesta.getInt("ID");
-                String nombre = respuesta.getString("nombre");
-                String descripcion = respuesta.getString("descripcion");
-                float precio = respuesta.getFloat("precio");
-                int cantidad = respuesta.getInt("cantidad");
-                Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
+                String producto = respuesta.getString("Producto");
+                String comprador = respuesta.getString("Comprador");
+                String fecha = respuesta.getString("Fecha");
+                String hora = respuesta.getString("Hora");
+                float precio = respuesta.getFloat("Precio");
+                String tipoPago = respuesta.getString("TipoPago");
+                Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
 
-                productos.add(producto);
+                ventas.add(venta);
             }
-            return productos;
+            return ventas;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
-            Logger.getLogger(ProductosDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VentasDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     @Override
-    public Producto getProducto(int id) {
+    public Venta getVenta(int id) {
         if (!conectado) {
             conectarDB();
         }
 
         try {
-            String consulta = "SELECT * FROM Productos WHERE ID=" + id;
+            String consulta = "SELECT Ventas.ID,Ventas.Hora,Ventas.Precio,Ventas.TipoPago,cliente.Nombre FROM Ventas INNER JOIN cliente ON Ventas.IDCliente = cliente.ID WHERE Ventas.ID=" + id;
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
@@ -96,28 +98,29 @@ public class ProductosDaoImpl implements IProductosDao {
                 return null;
             }
 
-            String nombre = respuesta.getString("nombre");
-            String descripcion = respuesta.getString("descripcion");
-            float precio = respuesta.getFloat("precio");
-            int cantidad = respuesta.getInt("cantidad");
+            String producto = respuesta.getString("Producto");
+            String comprador = respuesta.getString("Comprador");
+            String fecha = respuesta.getString("Fecha");
+            String hora = respuesta.getString("Hora");
+            float precio = respuesta.getFloat("Precio");
+            String tipoPago = respuesta.getString("TipoPago");
+            Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
 
-            Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
-
-            return producto;
+            return venta;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
-            Logger.getLogger(ProductosDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VentasDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     @Override
-    public void actualizarProducto(Producto producto) {
+    public void actualizarVenta(Venta venta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void eliminarProducto(int id) {
+    public void eliminarVenta(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

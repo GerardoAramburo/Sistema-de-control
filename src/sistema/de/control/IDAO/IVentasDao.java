@@ -6,19 +6,19 @@
 package sistema.de.control.IDAO;
 
 import java.util.ArrayList;
-import sistema.de.control.modelos.Producto;
+import sistema.de.control.modelos.Venta;
 
 /**
  *
  * @author Gerardo
  */
-public interface IProductosDao {
+public interface IVentasDao {
 
-    public ArrayList<Producto> getProductos();
+    public ArrayList<Venta> getVentas();
 
-    public Producto getProducto(int id);
+    public Venta getVenta(int id);
 
-    public void actualizarProducto(Producto producto);
+    public void actualizarVenta(Venta venta);
 
-    public void eliminarProducto(int id);
+    public void eliminarVenta(int id);
 }

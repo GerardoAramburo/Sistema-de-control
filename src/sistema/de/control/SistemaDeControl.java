@@ -20,8 +20,7 @@ public class SistemaDeControl {
     public static void main(String[] args) {
         FlatLightLaf.setup();
 
-        
         new MenuPrincipal("Claro").setVisible(true);
     }
-    
+
 }

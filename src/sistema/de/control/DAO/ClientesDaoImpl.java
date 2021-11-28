@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sistema.de.control.modelos.Producto;
+import sistema.de.control.modelos.Cliente;
 
 /**
  *
  * @author Gerardo
  */
-public class ProductosDaoImpl implements IProductosDao {
+public class ClientesDaoImpl implements IClientesDao {
 
     private String dbHost = "jdbc:mysql://sql5.freemysqlhosting.net/";
     private String dbNombre = "sql5453807";
@@ -31,7 +31,7 @@ public class ProductosDaoImpl implements IProductosDao {
     private boolean conectado = false;
     private Statement statement;
 
-    public ProductosDaoImpl() {
+    public ClientesDaoImpl() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (Exception e) {
@@ -52,43 +52,43 @@ public class ProductosDaoImpl implements IProductosDao {
     }
 
     @Override
-    public ArrayList<Producto> getProductos() {
+    public ArrayList<Cliente> getClientes() {
         if (!conectado) {
             conectarDB();
         }
         try {
-            ArrayList<Producto> productos = new ArrayList<>();
+            ArrayList<Cliente> clientes = new ArrayList<>();
 
-            String consulta = "SELECT * FROM Productos";
+            String consulta = "SELECT * FROM cliente";
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
             while (respuesta.next()) {
                 int id = respuesta.getInt("ID");
-                String nombre = respuesta.getString("nombre");
-                String descripcion = respuesta.getString("descripcion");
-                float precio = respuesta.getFloat("precio");
-                int cantidad = respuesta.getInt("cantidad");
-                Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
+                String nombre = respuesta.getString("Nombre");
+                String apellidos = respuesta.getString("Apellidos");
+                String domicilio = respuesta.getString("Domicilio");
+                String email = respuesta.getString("Email");
+                Cliente cliente = new Cliente(id, nombre, apellidos, domicilio, email);
 
-                productos.add(producto);
+                clientes.add(cliente);
             }
-            return productos;
+            return clientes;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
-            Logger.getLogger(ProductosDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientesDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     @Override
-    public Producto getProducto(int id) {
+    public Cliente getCliente(int id) {
         if (!conectado) {
             conectarDB();
         }
 
         try {
-            String consulta = "SELECT * FROM Productos WHERE ID=" + id;
+            String consulta = "SELECT * FROM cliente WHERE ID=" + id;
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
@@ -96,28 +96,27 @@ public class ProductosDaoImpl implements IProductosDao {
                 return null;
             }
 
-            String nombre = respuesta.getString("nombre");
-            String descripcion = respuesta.getString("descripcion");
-            float precio = respuesta.getFloat("precio");
-            int cantidad = respuesta.getInt("cantidad");
+            String nombre = respuesta.getString("Nombre");
+            String apellidos = respuesta.getString("Apellidos");
+            String domicilio = respuesta.getString("Domicilio");
+            String email = respuesta.getString("Email");
+            Cliente cliente = new Cliente(id, nombre, apellidos, domicilio, email);
 
-            Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
-
-            return producto;
+            return cliente;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
-            Logger.getLogger(ProductosDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClientesDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     @Override
-    public void actualizarProducto(Producto producto) {
+    public void actualizarCliente(Cliente cliente) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void eliminarProducto(int id) {
+    public void eliminarCliente(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

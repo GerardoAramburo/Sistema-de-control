@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package sistema.de.control;
+
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
@@ -15,9 +16,10 @@ import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import sistema.de.control.DAO.ProductosDaoImpl;
-import sistema.de.control.modelos.Producto;
+import sistema.de.control.DAO.*;
+import sistema.de.control.modelos.*;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
 
 /**
  *
@@ -30,13 +32,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         PRODUCTOS,
         CLIENTES
     }
-    
-    
-     Seccion seccionSeleccionada = Seccion.PRODUCTOS;
-     ArrayList<Producto> productos = new ArrayList<>();
-     ArrayList<Object> clientes = new ArrayList<>();
-     ArrayList<Object> ventas = new ArrayList<>();
-     String tema = "Claro";
+
+    Seccion seccionSeleccionada = Seccion.PRODUCTOS;
+    ArrayList<Producto> productos = new ArrayList<>();
+    ArrayList<Cliente> clientes = new ArrayList<>();
+    ArrayList<Venta> ventas = new ArrayList<>();
+    String tema = "Claro";
+    String[] columnasProducto = {"Nombre", "Descripción", "Precio", "Cantidad"};
+    String[] columnasCliente = {"Nombre", "Apellidos", "Domicilio", "Email"};
+    String[] columnasVenta = {"Producto", "Comprador", "Fecha", "Hora", "Precio", "Tipo de Pago"};
+
     /**
      * Creates new form MenuPrincipal
      */
@@ -46,129 +51,179 @@ public class MenuPrincipal extends javax.swing.JFrame {
         Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
-        
 
-        centrarColumna(0);
-        centrarColumna(3);
-        
         temaCb.setSelectedItem(tema);
-        
+
         System.out.println("#Menu principal inicializado correctamente");
     }
-    
-        public MenuPrincipal(String tema, ArrayList<Producto> productos, Seccion seccionSeleccionada) {
+
+    public MenuPrincipal(String tema, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes, Seccion seccionSeleccionada) {
         this.tema = tema;
         this.seccionSeleccionada = seccionSeleccionada;
+        this.ventas = ventas;
         this.productos = productos;
+        this.clientes = clientes;
         initComponents();
         Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
-        
 
-        centrarColumna(0);
-        centrarColumna(3);
-        
+        // centrarColumna(0);
+        //centrarColumna(3);
         temaCb.setSelectedItem(tema);
-        
 
         System.out.println("#Menu principal inicializado correctamente");
     }
 
     private void centrarColumna(int index) {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-        mainTable.getColumnModel().getColumn(index).setCellRenderer( centerRenderer );
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        mainTable.getColumnModel().getColumn(index).setCellRenderer(centerRenderer);
     }
-    
+
     private void cambiarSeccionSinRecargarDB() {
-            switch(seccionSeleccionada) {
+        switch (seccionSeleccionada) {
             case VENTAS: {
                 ventasBtn.setBackground(new Color(74, 78, 105));
-                productosBtn.setBackground(new Color(34,34,59));
-                clientesBtn.setBackground(new Color(34,34,59));
+                productosBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
                 break;
             }
-            
+
             case PRODUCTOS: {
                 productosBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34,34,59));
-                clientesBtn.setBackground(new Color(34,34,59));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
                 break;
             }
-            
+
             case CLIENTES: {
                 clientesBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34,34,59));
-                productosBtn.setBackground(new Color(34,34,59));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                productosBtn.setBackground(new Color(34, 34, 59));
                 break;
             }
-            
-            default: break;
+
+            default:
+                break;
         }
     }
-    
-    private void cambiarSeleccion(Seccion seccionSeleccionada) {        
+
+    private void cambiarSeleccion(Seccion seccionSeleccionada) {
         this.seccionSeleccionada = seccionSeleccionada;
         System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
-        switch(seccionSeleccionada) {
+        switch (seccionSeleccionada) {
             case VENTAS: {
                 ventasBtn.setBackground(new Color(74, 78, 105));
-                productosBtn.setBackground(new Color(34,34,59));
-                clientesBtn.setBackground(new Color(34,34,59));
+                productosBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
                 actualizarSeccion(seccionSeleccionada);
                 break;
             }
-            
+
             case PRODUCTOS: {
                 productosBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34,34,59));
-                clientesBtn.setBackground(new Color(34,34,59));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
                 actualizarSeccion(seccionSeleccionada);
                 break;
             }
-            
+
             case CLIENTES: {
                 clientesBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34,34,59));
-                productosBtn.setBackground(new Color(34,34,59));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                productosBtn.setBackground(new Color(34, 34, 59));
                 actualizarSeccion(seccionSeleccionada);
                 break;
             }
-            
-            default: break;
+
+            default:
+                break;
         }
     }
-    
+
     private void actualizarSeccion(Seccion seccion) {
-        DefaultTableModel model = (DefaultTableModel) mainTable.getModel();
-        switch(seccion) {
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+
+        };
+        switch (seccion) {
             case VENTAS:
+                VentasDaoImpl accesoVentas = new VentasDaoImpl();
+                ventas = null;
+                ventas = accesoVentas.getVentas();
+
+                //model = (DefaultTableModel) mainTable.getModel();
                 model.setRowCount(0);
+                rellenarTabla(seccion, ventas, productos, clientes, model);
                 break;
             case PRODUCTOS:
                 ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
                 productos = null;
                 productos = accesoProductos.getProductos();
-                
-                model = (DefaultTableModel) mainTable.getModel();
+
+                //model = (DefaultTableModel) mainTable.getModel();
                 model.setRowCount(0);
-                rellenarTabla(productos, model);
+                rellenarTabla(seccion, ventas, productos, clientes, model);
                 break;
             case CLIENTES:
+                ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
+                clientes = null;
+                clientes = accesoClientes.getClientes();
+
+                //model = (DefaultTableModel) mainTable.getModel();
                 model.setRowCount(0);
+                rellenarTabla(seccion, ventas, productos, clientes, model);
                 break;
             default:
                 break;
         }
 
     }
-    
-    private void rellenarTabla(ArrayList<Producto> productos, DefaultTableModel model) {
-        for(Producto producto : productos) {
-            model.addRow(new Object[]{producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getCantidad()});
+
+    private void rellenarTabla(Seccion seccion, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes, DefaultTableModel model) {
+        mainTable.setModel(model);
+        model.setColumnCount(0);
+        switch (seccion) {
+            case VENTAS: {
+                for (String nombreColumna : columnasVenta) {
+                    model.addColumn(nombreColumna);
+                }
+                for (Venta venta : ventas) {
+                    model.addRow(new Object[]{venta.getProducto(), venta.getComprador(), venta.getFecha(), venta.getHora(), venta.getPrecio(), venta.getTipoPago()});
+                }
+                break;
+            }
+            case PRODUCTOS: {
+                for (String nombreColumna : columnasProducto) {
+                    model.addColumn(nombreColumna);
+
+                }
+                centrarColumna(3);
+                for (Producto producto : productos) {
+                    model.addRow(new Object[]{producto.getNombre(), producto.getDescripcion(), producto.getPrecio(), producto.getCantidad()});
+                }
+                break;
+            }
+            case CLIENTES: {
+                for (String nombreColumna : columnasCliente) {
+                    model.addColumn(nombreColumna);
+                }
+                for (Cliente cliente : clientes) {
+                    model.addRow(new Object[]{cliente.getNombre(), cliente.getApellidos(), cliente.getDomicilio(), cliente.getEmail()});
+                }
+                break;
+            }
+            default: {
+                break;
+            }
         }
+
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -266,37 +321,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nombre", "Descripcion", "Cantidad"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane1.setViewportView(mainTable);
-        if (mainTable.getColumnModel().getColumnCount() > 0) {
-            mainTable.getColumnModel().getColumn(0).setMinWidth(20);
-            mainTable.getColumnModel().getColumn(0).setPreferredWidth(40);
-            mainTable.getColumnModel().getColumn(0).setMaxWidth(120);
-            mainTable.getColumnModel().getColumn(1).setMinWidth(40);
-            mainTable.getColumnModel().getColumn(1).setPreferredWidth(130);
-            mainTable.getColumnModel().getColumn(1).setMaxWidth(250);
-            mainTable.getColumnModel().getColumn(2).setMinWidth(40);
-            mainTable.getColumnModel().getColumn(3).setMinWidth(20);
-            mainTable.getColumnModel().getColumn(3).setPreferredWidth(60);
-            mainTable.getColumnModel().getColumn(3).setMaxWidth(120);
-        }
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -388,8 +416,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_ventasBtnMouseEntered
 
     private void ventasBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseExited
-        if(seccionSeleccionada != Seccion.VENTAS) {
-            ventasBtn.setBackground(new Color(34,34,59));
+        if (seccionSeleccionada != Seccion.VENTAS) {
+            ventasBtn.setBackground(new Color(34, 34, 59));
         }
     }//GEN-LAST:event_ventasBtnMouseExited
 
@@ -405,8 +433,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_productosBtnMouseEntered
 
     private void productosBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseExited
-        if(seccionSeleccionada != Seccion.PRODUCTOS) {
-            productosBtn.setBackground(new Color(34,34,59));
+        if (seccionSeleccionada != Seccion.PRODUCTOS) {
+            productosBtn.setBackground(new Color(34, 34, 59));
         }
     }//GEN-LAST:event_productosBtnMouseExited
 
@@ -423,8 +451,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_clientesBtnMouseEntered
 
     private void clientesBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseExited
-        if(seccionSeleccionada != Seccion.CLIENTES) {
-            clientesBtn.setBackground(new Color(34,34,59));
+        if (seccionSeleccionada != Seccion.CLIENTES) {
+            clientesBtn.setBackground(new Color(34, 34, 59));
         }
     }//GEN-LAST:event_clientesBtnMouseExited
 
@@ -433,8 +461,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void temaCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_temaCbActionPerformed
-        String temaSeleccionado = ((JComboBox)evt.getSource()).getSelectedItem().toString();
-        if(!(tema == temaSeleccionado)) {
+        String temaSeleccionado = ((JComboBox) evt.getSource()).getSelectedItem().toString();
+        if (!(tema == temaSeleccionado)) {
             if (temaSeleccionado == "Claro") {
                 FlatLightLaf.setup();
             } else {
@@ -442,17 +470,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
 
             this.dispose();
-            new MenuPrincipal(temaSeleccionado, productos, seccionSeleccionada).setVisible(true);
+            new MenuPrincipal(temaSeleccionado, ventas, productos, clientes, seccionSeleccionada).setVisible(true);
         }
     }//GEN-LAST:event_temaCbActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-         cambiarSeccionSinRecargarDB();
-         if (productos.size() == 0 && ventas.size() == 0 && clientes.size() == 0) {
-             actualizarSeccion(seccionSeleccionada);
-         } else {
-             rellenarTabla(productos, (DefaultTableModel) mainTable.getModel());
-         }
+        cambiarSeccionSinRecargarDB();
+        if (productos.size() == 0 && ventas.size() == 0 && clientes.size() == 0) {
+            actualizarSeccion(seccionSeleccionada);
+        } else {
+            DefaultTableModel model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int col) {
+                    return false;
+                }
+
+            };
+            rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+        }
     }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
