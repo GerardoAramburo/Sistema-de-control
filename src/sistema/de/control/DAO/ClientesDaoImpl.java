@@ -6,13 +6,9 @@
 package sistema.de.control.DAO;
 
 import sistema.de.control.IDAO.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sistema.de.control.modelos.Cliente;
@@ -21,39 +17,11 @@ import sistema.de.control.modelos.Cliente;
  *
  * @author Gerardo
  */
-public class ClientesDaoImpl implements IClientesDao {
-
-    private String dbHost = "jdbc:mysql://sql5.freemysqlhosting.net/";
-    private String dbNombre = "sql5453807";
-    private String dbUsuario = "sql5453807";
-    private String dbContra = "9ZqJVmpiKt";
-    private Connection conexion;
-    private boolean conectado = false;
-    private Statement statement;
-
-    public ClientesDaoImpl() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void conectarDB() {
-        try {
-            conexion = DriverManager.getConnection(dbHost + dbNombre, dbUsuario, dbContra);
-            statement = conexion.createStatement();
-            conectado = true;
-            System.out.println("#Conexion establecida con la base de datos");
-        } catch (SQLException ex) {
-            System.out.println("Error al conectar con la base de datos");
-            ex.printStackTrace();
-        }
-    }
+public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
 
     @Override
     public ArrayList<Cliente> getClientes() {
-        if (!conectado) {
+        if (!isConectado()) {
             conectarDB();
         }
         try {
@@ -83,7 +51,7 @@ public class ClientesDaoImpl implements IClientesDao {
 
     @Override
     public Cliente getCliente(int id) {
-        if (!conectado) {
+        if (!isConectado()) {
             conectarDB();
         }
 
