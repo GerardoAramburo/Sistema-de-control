@@ -121,4 +121,21 @@ public class ProductosDaoImpl implements IProductosDao {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void insertarProducto(Producto producto) {
+        if (!conectado) {
+            conectarDB();
+        }
+        
+        try {
+            String consulta = "INSERT INTO Productos(Nombre, Descripcion, Precio, Cantidad) VALUES('"+ producto.getNombre() +"', '"
+                    + producto.getDescripcion() +"',"+ producto.getPrecio() +","+ producto.getCantidad() +")";
+            statement.executeUpdate(consulta);
+            System.out.println("#Producto insertado correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar el producto");
+            ex.printStackTrace();
+        }
+    }
+
 }
