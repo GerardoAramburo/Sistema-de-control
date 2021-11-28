@@ -6,13 +6,9 @@
 package sistema.de.control.DAO;
 
 import sistema.de.control.IDAO.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sistema.de.control.modelos.Producto;
@@ -21,39 +17,11 @@ import sistema.de.control.modelos.Producto;
  *
  * @author Gerardo
  */
-public class ProductosDaoImpl implements IProductosDao {
-
-    private String dbHost = "jdbc:mysql://sql5.freemysqlhosting.net/";
-    private String dbNombre = "sql5453807";
-    private String dbUsuario = "sql5453807";
-    private String dbContra = "9ZqJVmpiKt";
-    private Connection conexion;
-    private boolean conectado = false;
-    private Statement statement;
-
-    public ProductosDaoImpl() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void conectarDB() {
-        try {
-            conexion = DriverManager.getConnection(dbHost + dbNombre, dbUsuario, dbContra);
-            statement = conexion.createStatement();
-            conectado = true;
-            System.out.println("#Conexion establecida con la base de datos");
-        } catch (SQLException ex) {
-            System.out.println("Error al conectar con la base de datos");
-            ex.printStackTrace();
-        }
-    }
-
+public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
+    
     @Override
     public ArrayList<Producto> getProductos() {
-        if (!conectado) {
+        if (!isConectado()) {
             conectarDB();
         }
         try {
@@ -73,6 +41,7 @@ public class ProductosDaoImpl implements IProductosDao {
 
                 productos.add(producto);
             }
+            conexion.close();
             return productos;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
@@ -83,7 +52,7 @@ public class ProductosDaoImpl implements IProductosDao {
 
     @Override
     public Producto getProducto(int id) {
-        if (!conectado) {
+        if (!isConectado()) {
             conectarDB();
         }
 
@@ -102,7 +71,8 @@ public class ProductosDaoImpl implements IProductosDao {
             int cantidad = respuesta.getInt("cantidad");
 
             Producto producto = new Producto(id, nombre, descripcion, precio, cantidad);
-
+            
+            conexion.close();
             return producto;
         } catch (SQLException ex) {
             System.out.println("No se pueden obtener los productos de la base de datos");
