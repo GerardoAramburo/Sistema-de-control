@@ -8,6 +8,7 @@ package sistema.de.control;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -110,6 +111,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void cambiarSeleccion(Seccion seccionSeleccionada) {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         this.seccionSeleccionada = seccionSeleccionada;
         System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
         switch (seccionSeleccionada) {
@@ -140,6 +142,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             default:
                 break;
         }
+         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void actualizarSeccion(Seccion seccion) {
@@ -406,7 +409,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel1.setText("Ventas");
 
         seccionSeleccionada = Seccion.VENTAS;
-
+        
         cambiarSeleccion(seccionSeleccionada);
     }//GEN-LAST:event_ventasBtnMouseClicked
 
