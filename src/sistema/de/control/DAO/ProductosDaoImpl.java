@@ -27,7 +27,7 @@ public class ProductosDaoImpl implements IProductosDao{
     private String dbUsuario = "sql5453807";
     private String dbContra = "9ZqJVmpiKt";
     private Connection conexion;
-    private boolean conectado;
+    private boolean conectado = false;
     private Statement statement;
     
     public ProductosDaoImpl() {
@@ -38,13 +38,13 @@ public class ProductosDaoImpl implements IProductosDao{
         {
             e.printStackTrace();
         }
-        conectarDB();
     }
     
     private void conectarDB() {
         try {
             conexion = DriverManager.getConnection(dbHost + dbNombre, dbUsuario, dbContra);
             statement = conexion.createStatement();
+            conectado = true;
             System.out.println("#Conexion establecida con la base de datos");
         } catch (SQLException ex) {
             System.out.println("Error al conectar con la base de datos");
@@ -54,6 +54,9 @@ public class ProductosDaoImpl implements IProductosDao{
 
     @Override
     public ArrayList<Producto> getProductos() {
+        if(!conectado) {
+            conectarDB();
+        }
         try {
             ArrayList<Producto> productos = new ArrayList<>();
             
@@ -80,7 +83,31 @@ public class ProductosDaoImpl implements IProductosDao{
 
     @Override
     public Producto getProducto(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(!conectado) {
+            conectarDB();
+        }
+        
+        try {
+            String consulta = "SELECT * FROM Productos WHERE ID=" + id;
+            
+            ResultSet respuesta = statement.executeQuery(consulta);
+            
+            if (!respuesta.next()) {
+                return null;
+            }
+            
+            String nombre = respuesta.getString("nombre");
+            String descripcion = respuesta.getString("descripcion");
+            int cantidad = respuesta.getInt("cantidad");
+            
+            Producto producto = new Producto(id, nombre, descripcion, cantidad);
+            
+            return producto;
+        } catch (SQLException ex) {
+            System.out.println("No se pueden obtener los productos de la base de datos");
+            Logger.getLogger(ProductosDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @Override
