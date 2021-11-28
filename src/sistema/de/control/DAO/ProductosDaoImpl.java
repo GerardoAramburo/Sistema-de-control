@@ -93,7 +93,7 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
 
     @Override
     public void insertarProducto(Producto producto) {
-        if (!conectado) {
+        if (!isConectado()) {
             conectarDB();
         }
         
