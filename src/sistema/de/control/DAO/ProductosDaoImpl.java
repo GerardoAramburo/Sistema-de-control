@@ -108,7 +108,6 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
                 consulta += " OR ID=" + producto.getId();
             }
             
-            System.out.println(consulta);
             
             statement.executeUpdate(consulta);
             System.out.println("#Productos eliminados correctamente");

@@ -30,7 +30,7 @@ public class AddProducto extends javax.swing.JFrame {
         @Override
         public boolean verify(JComponent input) {
             JTextField tf = (JTextField) input;
-            return !tf.getText().isBlank();
+            return !tf.getText().isEmpty();
         }
         
     }
@@ -39,7 +39,7 @@ public class AddProducto extends javax.swing.JFrame {
         @Override
         public boolean verify(JComponent input) {
             JTextPane tp = (JTextPane) input;
-            return !tp.getText().isBlank();
+            return !tp.getText().isEmpty();
         }
         
     }
@@ -50,7 +50,7 @@ public class AddProducto extends javax.swing.JFrame {
         public boolean verify(JComponent input) {
             JTextField tf = (JTextField) input;
             String text = tf.getText();
-            if (!text.isBlank()) {
+            if (!text.isEmpty()) {
                 try {
                     float precio = Float.parseFloat(text);
 
