@@ -92,6 +92,33 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
     }
 
     @Override
+    public void eliminarProductos(ArrayList<Producto> productos) {
+        if (productos.isEmpty()) {
+            return;
+        }
+        if (!isConectado()) {
+            conectarDB();
+        }
+        try {
+            Producto producto1 = productos.get(0);
+            String consulta = "DELETE FROM Productos Where ID=" + producto1.getId();
+            productos.remove(0);
+            
+            for (Producto producto : productos) {
+                consulta += " OR ID=" + producto.getId();
+            }
+            
+            System.out.println(consulta);
+            
+            statement.executeUpdate(consulta);
+            System.out.println("#Productos eliminados correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al eliminar los productos");
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
     public void insertarProducto(Producto producto) {
         if (!isConectado()) {
             conectarDB();
@@ -107,5 +134,4 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
             ex.printStackTrace();
         }
     }
-
 }

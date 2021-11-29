@@ -22,5 +22,7 @@ public interface IProductosDao {
 
     public void eliminarProducto(int id);
     
+    public void eliminarProductos(ArrayList<Producto> productos);
+    
     public void insertarProducto(Producto producto);
 }

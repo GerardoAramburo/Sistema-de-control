@@ -12,7 +12,15 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import sistema.de.control.SoundPlayer;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -533,8 +541,54 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void reproducirSonido(String nombre) {
+        String dir = System.getProperty("user.dir");
+        String soundName = dir + "/recursos" + nombre;   
+    
+        try {
+            SoundPlayer.thePath = soundName;
+            SoundPlayer soundPlayer = new SoundPlayer();
+            soundPlayer.play();
+        } catch (UnsupportedAudioFileException ex) {
+            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // ELiminar fila seleccionada
+        // Los arratList tienen que estar en el mismo orden que en la tabla, de lo contrario va a borrar los que no son  
+        int[] filasAEliminar = mainTable.getSelectedRows();
+        switch (seccionSeleccionada) {
+            case CLIENTES:
+                break;
+            case PRODUCTOS:
+                ArrayList<Producto> productosAEliminar = new ArrayList<>();
+                for (int filaAEliminar : filasAEliminar) {
+                   productosAEliminar.add(productos.get(filaAEliminar));
+                }
+                for (Producto productoAEliminar : productosAEliminar) {
+                    productos.remove(productoAEliminar);
+                }
+                if (!productosAEliminar.isEmpty()) {
+                    reproducirSonido("/370849__cabled-mess__clack-minimal-ui-sounds.wav");
+                }
+                ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
+                accesoProductos.eliminarProductos(productosAEliminar);
+                break;
+            case VENTAS:
+                break;
+            default:
+                break;
+        }
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+        rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
     }//GEN-LAST:event_jButton5ActionPerformed
     
     public void recargarTabla(Producto producto, Venta venta, Cliente cliente) {
