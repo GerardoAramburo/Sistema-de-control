@@ -28,7 +28,10 @@ import javax.swing.table.DefaultTableModel;
 import sistema.de.control.DAO.*;
 import sistema.de.control.modelos.*;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableModel;
 
 /**
@@ -58,11 +61,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
     public MenuPrincipal(String tema) {
         this.tema = tema;
         initComponents();
-        Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-        Dimension tamanoVentana = this.getSize();
-        this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
+        
+        centrarVentana();
 
         temaCb.setSelectedItem(tema);
+        
+        addSeleccionListener();
 
         System.out.println("#Menu principal inicializado correctamente");
     }
@@ -74,17 +78,28 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.productos = productos;
         this.clientes = clientes;
         initComponents();
-        Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-        Dimension tamanoVentana = this.getSize();
-        this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
 
-        // centrarColumna(0);
-        //centrarColumna(3);
+        centrarVentana();
+        
+        addSeleccionListener();
+        
         temaCb.setSelectedItem(tema);
 
         System.out.println("#Menu principal inicializado correctamente");
     }
 
+    private void addSeleccionListener() {
+        mainTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                eliminarBtn.setEnabled(mainTable.getSelectedRowCount() > 0);
+            }
+        });
+    }
+    private void centrarVentana() {
+        Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+        Dimension tamanoVentana = this.getSize();
+        this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
+    }
     private void centrarColumna(int index) {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -256,7 +271,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        eliminarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(900, 600));
@@ -359,6 +374,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
 
         jButton2.setText("Exportar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jButton3.setText("+");
@@ -368,11 +388,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
-        jButton5.setText("-");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        eliminarBtn.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        eliminarBtn.setText("-");
+        eliminarBtn.setEnabled(false);
+        eliminarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                eliminarBtnActionPerformed(evt);
             }
         });
 
@@ -400,7 +421,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton5)
+                        .addComponent(eliminarBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addGap(31, 31, 31)
@@ -430,7 +451,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton3)
-                        .addComponent(jButton5))
+                        .addComponent(eliminarBtn))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1)
                         .addComponent(jButton2))))
@@ -494,7 +515,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_clientesBtnMouseExited
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void temaCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_temaCbActionPerformed
@@ -530,11 +551,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         switch (seccionSeleccionada) {
             case CLIENTES:
+                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             case PRODUCTOS:
                 new AddProducto(this).setVisible(true);
                 break;
             case VENTAS:
+                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             default:
                 break;
@@ -557,11 +580,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
             Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void eliminarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarBtnActionPerformed
         // Los arratList tienen que estar en el mismo orden que en la tabla, de lo contrario va a borrar los que no son  
         int[] filasAEliminar = mainTable.getSelectedRows();
         switch (seccionSeleccionada) {
             case CLIENTES:
+                JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             case PRODUCTOS:
                 ArrayList<Producto> productosAEliminar = new ArrayList<>();
@@ -578,6 +602,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 accesoProductos.eliminarProductos(productosAEliminar);
                 break;
             case VENTAS:
+                JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             default:
                 break;
@@ -589,7 +614,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         };
         rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_eliminarBtnActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
+    }//GEN-LAST:event_jButton2ActionPerformed
     
     public void recargarTabla(Producto producto, Venta venta, Cliente cliente) {
         DefaultTableModel model = new DefaultTableModel() {
@@ -615,10 +644,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
+    private javax.swing.JButton eliminarBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
