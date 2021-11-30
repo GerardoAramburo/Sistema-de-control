@@ -110,6 +110,7 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
             
             
             statement.executeUpdate(consulta);
+            conexion.close();
             System.out.println("#Productos eliminados correctamente");
         } catch (SQLException ex) {
             System.out.println("Error al eliminar los productos");

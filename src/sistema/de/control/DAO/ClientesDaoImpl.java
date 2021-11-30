@@ -44,7 +44,7 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
             conexion.close();
             return clientes;
         } catch (SQLException ex) {
-            System.out.println("No se pueden obtener los productos de la base de datos");
+            System.out.println("No se pueden obtener la informacionde los clientes de la base de datos");
             Logger.getLogger(ClientesDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -73,7 +73,7 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
 
             return cliente;
         } catch (SQLException ex) {
-            System.out.println("No se pueden obtener los productos de la base de datos");
+            System.out.println("No se pueden obtener la informacion del cliente la base de datos");
             Logger.getLogger(ClientesDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

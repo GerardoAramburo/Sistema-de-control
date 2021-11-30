@@ -113,12 +113,6 @@ public class AddProducto extends javax.swing.JFrame {
             }
         });
 
-        nombreTf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nombreTfActionPerformed(evt);
-            }
-        });
-
         jButton1.setText("Agregar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,10 +218,6 @@ public class AddProducto extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Datos invalidos", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void nombreTfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreTfActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nombreTfActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.setAlwaysOnTop(false);

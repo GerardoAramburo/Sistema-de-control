@@ -551,7 +551,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         switch (seccionSeleccionada) {
             case CLIENTES:
-                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
+                 new AddCliente(this).setVisible(true);
                 break;
             case PRODUCTOS:
                 new AddProducto(this).setVisible(true);
