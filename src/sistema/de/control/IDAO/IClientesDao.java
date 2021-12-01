@@ -12,4 +12,6 @@ public interface IClientesDao {
     public void actualizarCliente(Cliente cliente);
 
     public void eliminarCliente(int id);
+    
+    public void insertarCliente(Cliente producto);
 }

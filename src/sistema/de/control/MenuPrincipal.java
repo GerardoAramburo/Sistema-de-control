@@ -42,6 +42,10 @@ import javax.swing.filechooser.FileFilter;
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
+    
+
+    
+
     public enum Seccion {
         VENTAS,
         PRODUCTOS,
@@ -713,6 +717,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             case CLIENTES:
                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
+                
             case PRODUCTOS:
                 ArrayList<Producto> productosAEliminar = new ArrayList<>();
                 for (int filaAEliminar : filasAEliminar) {
@@ -869,7 +874,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         if (venta != null) {
             ventas.add(venta);
         }
-        if (producto != null) {
+        if (cliente != null) {
             clientes.add(cliente);
         }
         

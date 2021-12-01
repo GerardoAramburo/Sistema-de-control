@@ -6,7 +6,13 @@ package sistema.de.control;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import javax.swing.InputVerifier;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import sistema.de.control.DAO.ClientesDaoImpl;
+import sistema.de.control.modelos.Cliente;
 
 /**
  *
@@ -19,10 +25,57 @@ public class AddCliente extends javax.swing.JFrame {
     /**
      * Creates new form AddCliente
      */
+    
+    class NameVerifier extends InputVerifier{
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField tf = (JTextField) input;
+            return !tf.getText().isEmpty();
+        }
+        
+    }
+    
+    class LastNameVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField tf = (JTextField) input;
+            return !tf.getText().isEmpty();
+        }
+        
+    }
+    
+    class AddressVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField tf = (JTextField) input;
+            return !tf.getText().isEmpty();
+        }
+        
+    }
+    
+    class EmailVerifier extends InputVerifier {
+        @Override
+        public boolean verify(JComponent input) {
+            JTextField tf = (JTextField) input;
+            return !tf.getText().isEmpty();
+        }
+        
+    }
+    
+    
+    
+    
     public AddCliente(JFrame parent) {
         this.parent = parent;
+        this.setAlwaysOnTop(true);
+        
+        parent.setEnabled(false);
         initComponents();
         
+        this.nombreTf.setInputVerifier(new NameVerifier());
+        this.apellidoTf.setInputVerifier(new LastNameVerifier());
+        this.direccionTf.setInputVerifier(new AddressVerifier());
+        this.emailTf.setInputVerifier(new EmailVerifier());
         centrarVentana();
     }
 
@@ -50,10 +103,24 @@ public class AddCliente extends javax.swing.JFrame {
         setTitle("Añadir cliente");
         setPreferredSize(new java.awt.Dimension(411, 390));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("Añadir cliente");
+
+        nombreTf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreTfActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Nombre");
 
@@ -121,8 +188,50 @@ public class AddCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        if (new NameVerifier().verify(nombreTf) && new LastNameVerifier().verify(apellidoTf) && new AddressVerifier().verify(direccionTf) && new EmailVerifier().verify(emailTf)) {
+            String Nombre = nombreTf.getText();
+            String Apellidos = apellidoTf.getText();
+            String Domicilio = direccionTf.getText();
+            String Email = emailTf.getText();
+            ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
+            Cliente clienteAInsertar = new Cliente(0, Nombre, Apellidos, Domicilio, Email);
+            
+            ((MenuPrincipal) parent).recargarTabla(null, null, clienteAInsertar);
+            
+            Thread thread = new Thread(){
+                public void run(){
+                    accesoClientes.insertarCliente(clienteAInsertar);
+                }
+            };
+
+            thread.start();
+            
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Datos invalidos", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void nombreTfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreTfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreTfActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        this.setAlwaysOnTop(false);
+        parent.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        this.setAlwaysOnTop(false);
+        parent.setEnabled(true);
+    }//GEN-LAST:event_formWindowClosing
+    
+                               
+
     
     private void centrarVentana() {
         Dimension tamanoVentanaParent = parent.getSize();

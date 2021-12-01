@@ -78,7 +78,10 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
             return null;
         }
     }
-
+    
+    
+    
+    
     @Override
     public void actualizarCliente(Cliente cliente) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -88,5 +91,24 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
     public void eliminarCliente(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+     
+    @Override
+    public void insertarCliente(Cliente cliente) {
+        if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            String consulta = "INSERT INTO cliente(Nombre, Apellidos, Domicilio, Email) VALUES('"+ cliente.getNombre() +"', '"
+                    + cliente.getApellidos() +"',"+ cliente.getDomicilio() +","+ cliente.getEmail() +")";
+            statement.executeUpdate(consulta);
+            
+            System.out.println("#Cliente insertado correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar el cliente");
+            ex.printStackTrace();
+        }
+    }
 
 }
+
