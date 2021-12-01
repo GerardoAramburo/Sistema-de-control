@@ -7,33 +7,35 @@ package sistema.de.control;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.google.gson.Gson;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import sistema.de.control.SoundPlayer;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import sistema.de.control.DAO.*;
 import sistema.de.control.modelos.*;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableModel;
-
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 /**
  *
  * @author Gerardo
@@ -177,6 +179,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
 
         };
+        
+        importarBtn.setEnabled(false);
+        exportarBtn.setEnabled(false);
         switch (seccion) {
             case VENTAS:
                 VentasDaoImpl accesoVentas = new VentasDaoImpl();
@@ -208,7 +213,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
             default:
                 break;
         }
-
+        
+        importarBtn.setEnabled(true);
+        exportarBtn.setEnabled(true);
     }
 
     private void rellenarTabla(Seccion seccion, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes, DefaultTableModel model) {
@@ -268,8 +275,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         temaCb = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        importarBtn = new javax.swing.JButton();
+        exportarBtn = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         eliminarBtn = new javax.swing.JButton();
 
@@ -366,17 +373,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Tema: ");
 
-        jButton1.setText("Importar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        importarBtn.setText("Importar");
+        importarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                importarBtnActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Exportar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        exportarBtn.setText("Exportar");
+        exportarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                exportarBtnActionPerformed(evt);
             }
         });
 
@@ -423,9 +430,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(eliminarBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(importarBtn)
                         .addGap(31, 31, 31)
-                        .addComponent(jButton2)
+                        .addComponent(exportarBtn)
                         .addGap(38, 38, 38))))
         );
         layout.setVerticalGroup(
@@ -453,8 +460,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addComponent(jButton3)
                         .addComponent(eliminarBtn))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton2))))
+                        .addComponent(importarBtn)
+                        .addComponent(exportarBtn))))
         );
 
         pack();
@@ -514,10 +521,129 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_clientesBtnMouseExited
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void importarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importarBtnActionPerformed
 
+        switch (seccionSeleccionada) {
+            case VENTAS:
+            JFileChooser seleccionadorDeArchivo = new JFileChooser();
+                
+            FileFilter JSONFilefilter = new FileFilter() 
+            {
+                public boolean accept(File file) {
+                    String path = file.getPath();
+                    return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Archivo JSON";
+                }
+            };
+                    
+            seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+
+            if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                String texto = leerArchivo(rutaCompleta);
+                Venta[] nuevasVentasArr = new Gson().fromJson(texto, Venta[].class);
+                    if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevasVentasArr.length + " ventas, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        for (Venta nuevoProducto: nuevasVentasArr) {
+                            ventas.add(nuevoProducto);
+                        }
+                    }
+            }
+            break;
+            case PRODUCTOS:
+                seleccionadorDeArchivo = new JFileChooser();
+                
+                JSONFilefilter = new FileFilter() 
+                {
+                    public boolean accept(File file) {
+                         String path = file.getPath();
+                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+                    
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+
+                if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    String texto = leerArchivo(rutaCompleta);
+                    Producto[] nuevosProductosArr = new Gson().fromJson(texto, Producto[].class);
+                    
+                    if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevosProductosArr.length + " productos, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        for (Producto nuevoProducto: nuevosProductosArr) {
+                            productos.add(nuevoProducto);
+                        }
+                    }
+                }
+                break;
+            case CLIENTES:
+                seleccionadorDeArchivo = new JFileChooser();
+                
+                JSONFilefilter = new FileFilter() 
+                {
+                    public boolean accept(File file) {
+                         String path = file.getPath();
+                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+                    
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+
+                if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    String texto = leerArchivo(rutaCompleta);
+                    Cliente[] nuevosClientesArr = new Gson().fromJson(texto, Cliente[].class);
+                    if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevosClientesArr.length + " clientes, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        for (Cliente nuevoProducto: nuevosClientesArr) {
+                            clientes.add(nuevoProducto);
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+        
+        rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+    }//GEN-LAST:event_importarBtnActionPerformed
+
+    
+    private String leerArchivo(String rutaCompleta) {
+        try {
+            File myObj = new File(rutaCompleta);
+            Scanner reader = new Scanner(myObj);
+            String text = "";
+            while (reader.hasNextLine()) {
+                text += reader.nextLine();
+            }
+            reader.close();
+            return text;
+        } catch (FileNotFoundException e) {
+            System.out.println("No se pudo encontrar el archivo");
+            e.printStackTrace();
+        }
+        return "";
+    }
     private void temaCbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_temaCbActionPerformed
         String temaSeleccionado = ((JComboBox) evt.getSource()).getSelectedItem().toString();
         if (!(tema == temaSeleccionado)) {
@@ -616,10 +742,118 @@ public class MenuPrincipal extends javax.swing.JFrame {
         rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
     }//GEN-LAST:event_eliminarBtnActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void exportarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportarBtnActionPerformed
+        switch (seccionSeleccionada) {
+            case VENTAS:
+                String jsonStr = new Gson().toJson(ventas);
+                
+                JFileChooser seleccionadorDeArchivo = new JFileChooser();
+                
+                FileFilter JSONFilefilter = new FileFilter() 
+                {
+                    public boolean accept(File file) {
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+                    
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+                if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                        rutaCompleta += ".json";
+                    }
+                    if (rutaCompleta.length() > 5) {
+                        escribirArchivo(rutaCompleta, jsonStr);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nombre invalido", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                break;
+            case PRODUCTOS:
+                jsonStr = new Gson().toJson(productos);
+                
+                seleccionadorDeArchivo = new JFileChooser();
+                
+                JSONFilefilter = new FileFilter() 
+                {
+                    public boolean accept(File file) {
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+                    
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+                if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                        rutaCompleta += ".json";
+                    }
+                    if (rutaCompleta.length() > 5) {
+                        escribirArchivo(rutaCompleta, jsonStr);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nombre invalido", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                break;
+            case CLIENTES:
+                jsonStr = new Gson().toJson(clientes);
+                
+                seleccionadorDeArchivo = new JFileChooser();
+                
+                JSONFilefilter = new FileFilter() 
+                {
+                    public boolean accept(File file) {
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+                    
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+                if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                        rutaCompleta += ".json";
+                    }
+                    if (rutaCompleta.length() > 5) {
+                        escribirArchivo(rutaCompleta, jsonStr);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Nombre invalido", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_exportarBtnActionPerformed
     
+    private void escribirArchivo(String rutaCompleta, String contenido) {
+        try {
+            FileWriter archivo = new FileWriter(rutaCompleta);
+            archivo.write(contenido);
+            archivo.close();
+            System.out.println("#Se guardo el archivo: " + rutaCompleta);
+            JOptionPane.showMessageDialog(this, "Archivo creado correctamente", "Correcto", JOptionPane.PLAIN_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "No se pudo crear el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
     public void recargarTabla(Producto producto, Venta venta, Cliente cliente) {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -645,8 +879,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
     private javax.swing.JButton eliminarBtn;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton exportarBtn;
+    private javax.swing.JButton importarBtn;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
