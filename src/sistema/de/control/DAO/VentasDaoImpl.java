@@ -41,7 +41,6 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
                 float precio = respuesta.getFloat("Precio");
                 String tipoPago = respuesta.getString("TipoPago");
                 Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
-
                 ventas.add(venta);
             }
             conexion.close();
@@ -88,7 +87,20 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
     public void actualizarVenta(Venta venta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    public void insertarVenta(Venta venta,int idProducto,int idCliente) {
+       if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            String consulta = "INSERT INTO Ventas(Fecha, Hora, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
+            statement.executeUpdate(consulta);
+            System.out.println("Venta insertada correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar la Venta");
+            ex.printStackTrace();
+        }
+    }
     @Override
     public void eliminarVenta(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
