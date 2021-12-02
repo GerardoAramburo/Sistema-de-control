@@ -687,7 +687,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 new AddProducto(this).setVisible(true);
                 break;
             case VENTAS:
-                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
+                 new AddVenta(this).setVisible(true);
                 break;
             default:
                 break;
