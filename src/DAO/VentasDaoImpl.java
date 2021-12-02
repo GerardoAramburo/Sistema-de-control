@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sistema.de.control.DAO;
+package DAO;
 
-import sistema.de.control.IDAO.*;
+import IDAO.IVentasDao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sistema.de.control.modelos.Venta;
+import modelo.Venta;
 
 /**
  *

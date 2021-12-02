@@ -1,7 +1,7 @@
-package sistema.de.control.IDAO;
+package IDAO;
 
 import java.util.ArrayList;
-import sistema.de.control.modelos.Cliente;
+import modelo.Cliente;
 
 public interface IClientesDao {
 

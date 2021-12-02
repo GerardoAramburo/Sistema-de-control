@@ -1,4 +1,4 @@
-package sistema.de.control.modelos;
+package modelo;
 
 import java.awt.Image;
 

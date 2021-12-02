@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package sistema.de.control;
+package vista;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -11,8 +11,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import sistema.de.control.DAO.ClientesDaoImpl;
-import sistema.de.control.modelos.Cliente;
+import DAO.ClientesDaoImpl;
+import modelo.Cliente;
 
 /**
  *
@@ -101,7 +101,6 @@ public class AddCliente extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Añadir cliente");
-        setPreferredSize(new java.awt.Dimension(411, 390));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {

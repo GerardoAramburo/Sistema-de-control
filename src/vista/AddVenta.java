@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package sistema.de.control;
+package vista;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import sistema.de.control.DAO.ClientesDaoImpl;
-import sistema.de.control.DAO.ProductosDaoImpl;
-import sistema.de.control.DAO.VentasDaoImpl;
-import sistema.de.control.modelos.Producto;
-import sistema.de.control.modelos.Venta;
-import sistema.de.control.modelos.Cliente;
+import DAO.ClientesDaoImpl;
+import DAO.ProductosDaoImpl;
+import DAO.VentasDaoImpl;
+import modelo.Producto;
+import modelo.Venta;
+import modelo.Cliente;
 
 /**
  *

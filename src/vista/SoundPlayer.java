@@ -1,4 +1,4 @@
-package sistema.de.control;
+package vista;
 
 import java.io.File; 
 import java.util.Scanner; 

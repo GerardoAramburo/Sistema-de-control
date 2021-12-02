@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package sistema.de.control;
+package vista;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import sistema.de.control.DAO.ProductosDaoImpl;
-import sistema.de.control.modelos.Producto;
+import DAO.ProductosDaoImpl;
+import modelo.Producto;
 
 /**
  *

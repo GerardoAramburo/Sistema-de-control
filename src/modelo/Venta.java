@@ -1,4 +1,4 @@
-package sistema.de.control.modelos;
+package modelo;
 
 public class Venta {
 

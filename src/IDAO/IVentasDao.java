@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sistema.de.control.IDAO;
+package IDAO;
 
 import java.util.ArrayList;
-import sistema.de.control.modelos.Venta;
+import modelo.Venta;
 
 /**
  *

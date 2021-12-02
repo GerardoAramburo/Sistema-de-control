@@ -3,8 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sistema.de.control;
+package vista;
 
+import DAO.ProductosDaoImpl;
+import DAO.ClientesDaoImpl;
+import DAO.VentasDaoImpl;
+import modelo.Cliente;
+import modelo.Venta;
+import modelo.Producto;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.google.gson.Gson;
@@ -27,8 +33,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import sistema.de.control.DAO.*;
-import sistema.de.control.modelos.*;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
