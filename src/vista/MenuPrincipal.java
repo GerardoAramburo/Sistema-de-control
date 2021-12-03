@@ -24,37 +24,24 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JLabel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import modelo.Seccion;
+
 /**
  *
  * @author Gerardo
  */
 public class MenuPrincipal extends javax.swing.JFrame {
-
-    
-
-    
-
-    public enum Seccion {
-        VENTAS,
-        PRODUCTOS,
-        CLIENTES
-    }
 
     Seccion seccionSeleccionada = Seccion.PRODUCTOS;
     ArrayList<Producto> productos = new ArrayList<>();
@@ -64,6 +51,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     String[] columnasProducto = {"Nombre", "Descripción", "Precio", "Cantidad"};
     String[] columnasCliente = {"Nombre", "Apellidos", "Domicilio", "Email"};
     String[] columnasVenta = {"Producto", "Comprador", "Fecha", "Hora", "Precio", "Tipo de Pago"};
+    DefaultTableModel model;
 
     /**
      * Creates new form MenuPrincipal
@@ -71,12 +59,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     public MenuPrincipal(String tema) {
         this.tema = tema;
         initComponents();
-        
-        centrarVentana();
-
         temaCb.setSelectedItem(tema);
-        
-        addSeleccionListener();
+
+        configurarTabla();
 
         System.out.println("#Menu principal inicializado correctamente");
     }
@@ -89,105 +74,70 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.clientes = clientes;
         initComponents();
 
-        centrarVentana();
-        
-        addSeleccionListener();
-        
+        configurarTabla();
+
         temaCb.setSelectedItem(tema);
 
         System.out.println("#Menu principal inicializado correctamente");
     }
 
-    private void addSeleccionListener() {
-        mainTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                eliminarBtn.setEnabled(mainTable.getSelectedRowCount() > 0);
-            }
+    private void configurarTabla() {
+        mainTable.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            eliminarBtn.setEnabled(mainTable.getSelectedRowCount() > 0);
         });
-    }
-    private void centrarVentana() {
+
         Point centroPantalla = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         Dimension tamanoVentana = this.getSize();
         this.setLocation(centroPantalla.x - (tamanoVentana.width / 2), centroPantalla.y - (tamanoVentana.height / 2));
-    }
-    private void centrarColumna(int index) {
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        mainTable.getColumnModel().getColumn(index).setCellRenderer(centerRenderer);
-    }
 
-    private void cambiarSeccionSinRecargarDB() {
-        switch (seccionSeleccionada) {
-            case VENTAS: {
-                ventasBtn.setBackground(new Color(74, 78, 105));
-                productosBtn.setBackground(new Color(34, 34, 59));
-                clientesBtn.setBackground(new Color(34, 34, 59));
-                break;
-            }
-
-            case PRODUCTOS: {
-                productosBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34, 34, 59));
-                clientesBtn.setBackground(new Color(34, 34, 59));
-                break;
-            }
-
-            case CLIENTES: {
-                clientesBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34, 34, 59));
-                productosBtn.setBackground(new Color(34, 34, 59));
-                break;
-            }
-
-            default:
-                break;
-        }
-    }
-
-    private void cambiarSeleccion(Seccion seccionSeleccionada) {
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        this.seccionSeleccionada = seccionSeleccionada;
-        System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
-        switch (seccionSeleccionada) {
-            case VENTAS: {
-                ventasBtn.setBackground(new Color(74, 78, 105));
-                productosBtn.setBackground(new Color(34, 34, 59));
-                clientesBtn.setBackground(new Color(34, 34, 59));
-                actualizarSeccion(seccionSeleccionada);
-                break;
-            }
-
-            case PRODUCTOS: {
-                productosBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34, 34, 59));
-                clientesBtn.setBackground(new Color(34, 34, 59));
-                actualizarSeccion(seccionSeleccionada);
-                break;
-            }
-
-            case CLIENTES: {
-                clientesBtn.setBackground(new Color(74, 78, 105));
-                ventasBtn.setBackground(new Color(34, 34, 59));
-                productosBtn.setBackground(new Color(34, 34, 59));
-                actualizarSeccion(seccionSeleccionada);
-                break;
-            }
-
-            default:
-                break;
-        }
-         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-    }
-
-    private void actualizarSeccion(Seccion seccion) {
-        DefaultTableModel model = new DefaultTableModel() {
+        model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int col) {
                 return false;
             }
 
         };
-        
+    }
+
+    private void cambiarSeccion(Seccion seccionSeleccionada, boolean actualizar) {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        this.seccionSeleccionada = seccionSeleccionada;
+        System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
+
+        switch (seccionSeleccionada) {
+            case VENTAS: {
+                ventasBtn.setBackground(new Color(74, 78, 105));
+                productosBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
+                jLabel1.setText("Ventas");
+                break;
+            }
+
+            case PRODUCTOS: {
+                productosBtn.setBackground(new Color(74, 78, 105));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                clientesBtn.setBackground(new Color(34, 34, 59));
+                jLabel1.setText("Productos");
+                break;
+            }
+
+            case CLIENTES: {
+                clientesBtn.setBackground(new Color(74, 78, 105));
+                ventasBtn.setBackground(new Color(34, 34, 59));
+                productosBtn.setBackground(new Color(34, 34, 59));
+                jLabel1.setText("Clientes");
+
+                break;
+            }
+        }
+
+        if (actualizar) {
+            actualizarSeccion(seccionSeleccionada);
+        }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+
+    private void actualizarSeccion(Seccion seccion) {
         importarBtn.setEnabled(false);
         exportarBtn.setEnabled(false);
         switch (seccion) {
@@ -221,7 +171,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             default:
                 break;
         }
-        
+
         importarBtn.setEnabled(true);
         exportarBtn.setEnabled(true);
     }
@@ -244,7 +194,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     model.addColumn(nombreColumna);
 
                 }
-                centrarColumna(3);
                 for (Producto producto : productos) {
                     model.addRow(new Object[]{producto.getNombre(), producto.getDescripcion(), producto.getPrecio(), producto.getCantidad()});
                 }
@@ -476,16 +425,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ventasBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseClicked
-        jLabel1.setText("Ventas");
-
         seccionSeleccionada = Seccion.VENTAS;
-        
-        cambiarSeleccion(seccionSeleccionada);
+        cambiarSeccion(seccionSeleccionada, true);
     }//GEN-LAST:event_ventasBtnMouseClicked
 
     private void ventasBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseEntered
-
-        ventasBtn.setBackground(new Color(74, 78, 105));
+ ventasBtn.setBackground(new Color(74, 78, 105));
     }//GEN-LAST:event_ventasBtnMouseEntered
 
     private void ventasBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseExited
@@ -495,10 +440,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_ventasBtnMouseExited
 
     private void productosBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseClicked
-        jLabel1.setText("Productos");
-
         seccionSeleccionada = Seccion.PRODUCTOS;
-        cambiarSeleccion(seccionSeleccionada);
+        cambiarSeccion(seccionSeleccionada, true);
     }//GEN-LAST:event_productosBtnMouseClicked
 
     private void productosBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productosBtnMouseEntered
@@ -512,11 +455,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_productosBtnMouseExited
 
     private void clientesBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseClicked
-        jLabel1.setText("Clientes");
-
         seccionSeleccionada = Seccion.CLIENTES;
-        cambiarSeleccion(seccionSeleccionada);
-
+        cambiarSeccion(seccionSeleccionada, true);
     }//GEN-LAST:event_clientesBtnMouseClicked
 
     private void clientesBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clientesBtnMouseEntered
@@ -533,42 +473,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         switch (seccionSeleccionada) {
             case VENTAS:
-            JFileChooser seleccionadorDeArchivo = new JFileChooser();
-                
-            FileFilter JSONFilefilter = new FileFilter() 
-            {
-                public boolean accept(File file) {
-                    String path = file.getPath();
-                    return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
-                }
+                JFileChooser seleccionadorDeArchivo = new JFileChooser();
 
-                @Override
-                public String getDescription() {
-                    return "Archivo JSON";
-                }
-            };
-                    
-            seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
-
-            if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
-                String texto = leerArchivo(rutaCompleta);
-                Venta[] nuevasVentasArr = new Gson().fromJson(texto, Venta[].class);
-                    if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevasVentasArr.length + " ventas, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                        for (Venta nuevoProducto: nuevasVentasArr) {
-                            ventas.add(nuevoProducto);
-                        }
-                    }
-            }
-            break;
-            case PRODUCTOS:
-                seleccionadorDeArchivo = new JFileChooser();
-                
-                JSONFilefilter = new FileFilter() 
-                {
+                FileFilter JSONFilefilter = new FileFilter() {
                     public boolean accept(File file) {
-                         String path = file.getPath();
-                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
                     }
 
                     @Override
@@ -576,16 +486,44 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         return "Archivo JSON";
                     }
                 };
-                    
+
+                seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
+
+                if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
+                    String texto = leerArchivo(rutaCompleta);
+                    Venta[] nuevasVentasArr = new Gson().fromJson(texto, Venta[].class);
+                    if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevasVentasArr.length + " ventas, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                        for (Venta nuevoProducto : nuevasVentasArr) {
+                            ventas.add(nuevoProducto);
+                        }
+                    }
+                }
+                break;
+            case PRODUCTOS:
+                seleccionadorDeArchivo = new JFileChooser();
+
+                JSONFilefilter = new FileFilter() {
+                    public boolean accept(File file) {
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Archivo JSON";
+                    }
+                };
+
                 seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
 
                 if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                     String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
                     String texto = leerArchivo(rutaCompleta);
                     Producto[] nuevosProductosArr = new Gson().fromJson(texto, Producto[].class);
-                    
+
                     if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevosProductosArr.length + " productos, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                        for (Producto nuevoProducto: nuevosProductosArr) {
+                        for (Producto nuevoProducto : nuevosProductosArr) {
                             productos.add(nuevoProducto);
                         }
                     }
@@ -593,12 +531,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
             case CLIENTES:
                 seleccionadorDeArchivo = new JFileChooser();
-                
-                JSONFilefilter = new FileFilter() 
-                {
+
+                JSONFilefilter = new FileFilter() {
                     public boolean accept(File file) {
-                         String path = file.getPath();
-                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
+                        String path = file.getPath();
+                        return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
                     }
 
                     @Override
@@ -606,7 +543,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         return "Archivo JSON";
                     }
                 };
-                    
+
                 seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
 
                 if (seleccionadorDeArchivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -614,7 +551,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     String texto = leerArchivo(rutaCompleta);
                     Cliente[] nuevosClientesArr = new Gson().fromJson(texto, Cliente[].class);
                     if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevosClientesArr.length + " clientes, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                        for (Cliente nuevoProducto: nuevosClientesArr) {
+                        for (Cliente nuevoProducto : nuevosClientesArr) {
                             clientes.add(nuevoProducto);
                         }
                     }
@@ -624,18 +561,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
         }
 
-        
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
-        
         rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
     }//GEN-LAST:event_importarBtnActionPerformed
 
-    
     private String leerArchivo(String rutaCompleta) {
         try {
             File myObj = new File(rutaCompleta);
@@ -662,22 +590,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
 
             this.dispose();
+            System.out.println(seccionSeleccionada);
             new MenuPrincipal(temaSeleccionado, ventas, productos, clientes, seccionSeleccionada).setVisible(true);
         }
     }//GEN-LAST:event_temaCbActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        cambiarSeccionSinRecargarDB();
+        cambiarSeccion(seccionSeleccionada, false);
         if (productos.size() == 0 && ventas.size() == 0 && clientes.size() == 0) {
             actualizarSeccion(seccionSeleccionada);
         } else {
-            DefaultTableModel model = new DefaultTableModel() {
-                @Override
-                public boolean isCellEditable(int row, int col) {
-                    return false;
-                }
-
-            };
             rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
         }
     }//GEN-LAST:event_formWindowOpened
@@ -685,13 +607,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         switch (seccionSeleccionada) {
             case CLIENTES:
-                 new AddCliente(this).setVisible(true);
+                new AddCliente(this).setVisible(true);
                 break;
             case PRODUCTOS:
                 new AddProducto(this).setVisible(true);
                 break;
             case VENTAS:
-                 new AddVenta(this).setVisible(true);
+                new AddVenta(this).setVisible(true);
                 break;
             default:
                 break;
@@ -700,8 +622,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void reproducirSonido(String nombre) {
         String dir = System.getProperty("user.dir");
-        String soundName = dir + "/recursos" + nombre;   
-    
+        String soundName = dir + "/recursos" + nombre;
+
         try {
             SoundPlayer.thePath = soundName;
             SoundPlayer soundPlayer = new SoundPlayer();
@@ -721,11 +643,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
             case CLIENTES:
                 JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
-                
+
             case PRODUCTOS:
                 ArrayList<Producto> productosAEliminar = new ArrayList<>();
                 for (int filaAEliminar : filasAEliminar) {
-                   productosAEliminar.add(productos.get(filaAEliminar));
+                    productosAEliminar.add(productos.get(filaAEliminar));
                 }
                 for (Producto productoAEliminar : productosAEliminar) {
                     productos.remove(productoAEliminar);
@@ -742,12 +664,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
             default:
                 break;
         }
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
         rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
     }//GEN-LAST:event_eliminarBtnActionPerformed
 
@@ -755,11 +671,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         switch (seccionSeleccionada) {
             case VENTAS:
                 String jsonStr = new Gson().toJson(ventas);
-                
+
                 JFileChooser seleccionadorDeArchivo = new JFileChooser();
-                
-                FileFilter JSONFilefilter = new FileFilter() 
-                {
+
+                FileFilter JSONFilefilter = new FileFilter() {
                     public boolean accept(File file) {
                         String path = file.getPath();
                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
@@ -770,11 +685,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         return "Archivo JSON";
                     }
                 };
-                    
+
                 seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
                 if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
-                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                    if (!(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON"))) {
                         rutaCompleta += ".json";
                     }
                     if (rutaCompleta.length() > 5) {
@@ -786,11 +701,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
             case PRODUCTOS:
                 jsonStr = new Gson().toJson(productos);
-                
+
                 seleccionadorDeArchivo = new JFileChooser();
-                
-                JSONFilefilter = new FileFilter() 
-                {
+
+                JSONFilefilter = new FileFilter() {
                     public boolean accept(File file) {
                         String path = file.getPath();
                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
@@ -801,11 +715,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         return "Archivo JSON";
                     }
                 };
-                    
+
                 seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
                 if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
-                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                    if (!(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON"))) {
                         rutaCompleta += ".json";
                     }
                     if (rutaCompleta.length() > 5) {
@@ -817,11 +731,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
             case CLIENTES:
                 jsonStr = new Gson().toJson(clientes);
-                
+
                 seleccionadorDeArchivo = new JFileChooser();
-                
-                JSONFilefilter = new FileFilter() 
-                {
+
+                JSONFilefilter = new FileFilter() {
                     public boolean accept(File file) {
                         String path = file.getPath();
                         return file.isDirectory() || path.endsWith(".json") || path.endsWith("JSON");
@@ -832,11 +745,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         return "Archivo JSON";
                     }
                 };
-                    
+
                 seleccionadorDeArchivo.setFileFilter(JSONFilefilter);
                 if (seleccionadorDeArchivo.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                     String rutaCompleta = seleccionadorDeArchivo.getSelectedFile().getAbsolutePath();
-                    if ( !(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON")) ) {
+                    if (!(rutaCompleta.endsWith(".json") || rutaCompleta.endsWith(".JSON"))) {
                         rutaCompleta += ".json";
                     }
                     if (rutaCompleta.length() > 5) {
@@ -850,7 +763,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
         }
     }//GEN-LAST:event_exportarBtnActionPerformed
-    
+
     private void escribirArchivo(String rutaCompleta, String contenido) {
         try {
             FileWriter archivo = new FileWriter(rutaCompleta);
@@ -863,15 +776,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    public void recargarTabla(Producto producto, Venta venta, Cliente cliente) {
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
 
-        };
-        
+    public void recargarTabla(Producto producto, Venta venta, Cliente cliente) {
         if (producto != null) {
             productos.add(producto);
         }
@@ -881,10 +787,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         if (cliente != null) {
             clientes.add(cliente);
         }
-        
+
         rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel clientesBtn;
     private javax.swing.JButton eliminarBtn;
