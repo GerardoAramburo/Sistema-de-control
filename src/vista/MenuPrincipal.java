@@ -51,8 +51,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
     String[] columnasProducto = {"Nombre", "Descripción", "Precio", "Cantidad"};
     String[] columnasCliente = {"Nombre", "Apellidos", "Domicilio", "Email"};
     String[] columnasVenta = {"Producto", "Comprador", "Fecha", "Hora", "Precio", "Tipo de Pago"};
-    DefaultTableModel model;
+    VentasDaoImpl accesoVentas;
+    ProductosDaoImpl accesoProductos;
+    ClientesDaoImpl accesoClientes;
 
+    DefaultTableModel model;
     /**
      * Creates new form MenuPrincipal
      */
@@ -100,7 +103,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     private void cambiarSeccion(Seccion seccionSeleccionada, boolean actualizar) {
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         this.seccionSeleccionada = seccionSeleccionada;
         System.out.println("#Seccion cambiada a: " + this.seccionSeleccionada);
 
@@ -126,57 +128,43 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 ventasBtn.setBackground(new Color(34, 34, 59));
                 productosBtn.setBackground(new Color(34, 34, 59));
                 jLabel1.setText("Clientes");
-
                 break;
             }
         }
-
         if (actualizar) {
             actualizarSeccion(seccionSeleccionada);
         }
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
 
     private void actualizarSeccion(Seccion seccion) {
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         importarBtn.setEnabled(false);
         exportarBtn.setEnabled(false);
+        model.setRowCount(0);
+
         switch (seccion) {
             case VENTAS:
-                VentasDaoImpl accesoVentas = new VentasDaoImpl();
-                ventas = null;
+                accesoVentas = new VentasDaoImpl();
                 ventas = accesoVentas.getVentas();
-
-                //model = (DefaultTableModel) mainTable.getModel();
-                model.setRowCount(0);
-                rellenarTabla(seccion, ventas, productos, clientes, model);
                 break;
             case PRODUCTOS:
-                ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
-                productos = null;
+                accesoProductos = new ProductosDaoImpl();
                 productos = accesoProductos.getProductos();
-
-                //model = (DefaultTableModel) mainTable.getModel();
-                model.setRowCount(0);
-                rellenarTabla(seccion, ventas, productos, clientes, model);
                 break;
             case CLIENTES:
-                ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
-                clientes = null;
+                accesoClientes = new ClientesDaoImpl();
                 clientes = accesoClientes.getClientes();
-
-                //model = (DefaultTableModel) mainTable.getModel();
-                model.setRowCount(0);
-                rellenarTabla(seccion, ventas, productos, clientes, model);
-                break;
-            default:
                 break;
         }
 
+        rellenarTabla(seccion, ventas, productos, clientes);
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        
         importarBtn.setEnabled(true);
         exportarBtn.setEnabled(true);
     }
 
-    private void rellenarTabla(Seccion seccion, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes, DefaultTableModel model) {
+    private void rellenarTabla(Seccion seccion, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes) {
         mainTable.setModel(model);
         model.setColumnCount(0);
         switch (seccion) {
@@ -430,7 +418,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_ventasBtnMouseClicked
 
     private void ventasBtnMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseEntered
- ventasBtn.setBackground(new Color(74, 78, 105));
+        ventasBtn.setBackground(new Color(74, 78, 105));
     }//GEN-LAST:event_ventasBtnMouseEntered
 
     private void ventasBtnMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ventasBtnMouseExited
@@ -561,7 +549,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 break;
         }
 
-        rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+        rellenarTabla(seccionSeleccionada, ventas, productos, clientes);
     }//GEN-LAST:event_importarBtnActionPerformed
 
     private String leerArchivo(String rutaCompleta) {
@@ -597,10 +585,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         cambiarSeccion(seccionSeleccionada, false);
-        if (productos.size() == 0 && ventas.size() == 0 && clientes.size() == 0) {
+        if (productos.isEmpty() && ventas.isEmpty() && clientes.isEmpty()) {
             actualizarSeccion(seccionSeleccionada);
         } else {
-            rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+            rellenarTabla(seccionSeleccionada, ventas, productos, clientes);
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -628,11 +616,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             SoundPlayer.thePath = soundName;
             SoundPlayer soundPlayer = new SoundPlayer();
             soundPlayer.play();
-        } catch (UnsupportedAudioFileException ex) {
-            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (LineUnavailableException ex) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -664,7 +648,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             default:
                 break;
         }
-        rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+        rellenarTabla(seccionSeleccionada, ventas, productos, clientes);
     }//GEN-LAST:event_eliminarBtnActionPerformed
 
     private void exportarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportarBtnActionPerformed
@@ -788,7 +772,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             clientes.add(cliente);
         }
 
-        rellenarTabla(seccionSeleccionada, ventas, productos, clientes, model);
+        rellenarTabla(seccionSeleccionada, ventas, productos, clientes);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
