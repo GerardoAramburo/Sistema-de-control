@@ -82,8 +82,20 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
     }
 
     @Override
-    public void actualizarProducto(Producto producto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void actualizarProducto(Producto producto, int id) {
+        if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            String consulta = "UPDATE Productos SET Nombre = '" + producto.getNombre() + "', Descripcion='" + producto.getDescripcion()+"', Precio='"+producto.getPrecio()+"', Cantidad="+producto.getCantidad()+" WHERE ID="+id;
+            statement.executeUpdate(consulta);
+            System.out.println("Producto actualizado correctamente");
+            conexion.close();
+        } catch (SQLException ex) {
+            System.out.println("Error al actualizar el producto");
+            ex.printStackTrace();
+        }
     }
 
     @Override

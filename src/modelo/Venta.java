@@ -7,15 +7,17 @@ public class Venta {
     private String comprador;
     private String fecha;
     private String hora;
+    private int cantidad;
     private float precio;
     private String TipoPago;
 
-    public Venta(int id, String producto, String comprador, String fecha, String hora, float precio, String TipoPago) {
+    public Venta(int id, String producto, String comprador, String fecha, String hora, int cantidad, float precio, String TipoPago) {
         this.id = id;
         this.producto = producto;
         this.comprador = comprador;
         this.fecha = fecha;
         this.hora = hora;
+        this.cantidad = cantidad;
         this.precio = precio;
         this.TipoPago = TipoPago;
     }
@@ -68,6 +70,14 @@ public class Venta {
         this.hora = hora;
     }
 
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+    
     public float getPrecio() {
         return precio;
     }

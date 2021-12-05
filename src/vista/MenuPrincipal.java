@@ -50,12 +50,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
     String tema = "Claro";
     String[] columnasProducto = {"Nombre", "Descripción", "Precio", "Cantidad"};
     String[] columnasCliente = {"Nombre", "Apellidos", "Domicilio", "Email"};
-    String[] columnasVenta = {"Producto", "Comprador", "Fecha", "Hora", "Precio", "Tipo de Pago"};
+    String[] columnasVenta = {"Producto", "Comprador", "Fecha", "Hora", "Cantidad", "Precio", "Tipo de Pago"};
     VentasDaoImpl accesoVentas;
     ProductosDaoImpl accesoProductos;
     ClientesDaoImpl accesoClientes;
 
     DefaultTableModel model;
+
     /**
      * Creates new form MenuPrincipal
      */
@@ -159,7 +160,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         rellenarTabla(seccion, ventas, productos, clientes);
         this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        
+
         importarBtn.setEnabled(true);
         exportarBtn.setEnabled(true);
     }
@@ -167,13 +168,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void rellenarTabla(Seccion seccion, ArrayList<Venta> ventas, ArrayList<Producto> productos, ArrayList<Cliente> clientes) {
         mainTable.setModel(model);
         model.setColumnCount(0);
+        model.setRowCount(0);
         switch (seccion) {
             case VENTAS: {
                 for (String nombreColumna : columnasVenta) {
                     model.addColumn(nombreColumna);
                 }
                 for (Venta venta : ventas) {
-                    model.addRow(new Object[]{venta.getProducto(), venta.getComprador(), venta.getFecha(), venta.getHora(), venta.getPrecio(), venta.getTipoPago()});
+                    model.addRow(new Object[]{venta.getProducto(), venta.getComprador(), venta.getFecha(), venta.getHora(), venta.getCantidad(), venta.getPrecio(), venta.getTipoPago()});
                 }
                 break;
             }
@@ -601,7 +603,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 new AddProducto(this).setVisible(true);
                 break;
             case VENTAS:
-                new AddVenta(this).setVisible(true);
+                new AddVenta(this, ventas).setVisible(true);
                 break;
             default:
                 break;

@@ -18,7 +18,7 @@ public interface IProductosDao {
 
     public Producto getProducto(int id);
 
-    public void actualizarProducto(Producto producto);
+    public void actualizarProducto(Producto producto, int id);
 
     public void eliminarProducto(int id);
     

@@ -28,7 +28,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         try {
             ArrayList<Venta> ventas = new ArrayList<>();
 
-            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID";
+            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID";
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
@@ -38,9 +38,10 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
                 String comprador = respuesta.getString("Comprador");
                 String fecha = respuesta.getString("Fecha");
                 String hora = respuesta.getString("Hora");
+                int cantidad = respuesta.getInt("Cantidad");
                 float precio = respuesta.getFloat("Precio");
                 String tipoPago = respuesta.getString("TipoPago");
-                Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
+                Venta venta = new Venta(id, producto, comprador, fecha, hora, cantidad, precio, tipoPago);
                 ventas.add(venta);
             }
             conexion.close();
@@ -54,13 +55,13 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
 
     @Override
     public Venta getVenta(int id) {
-        if (isConectado()) {
+        if (!isConectado()) {
             conectarDB();
         }
 
         try {
-            String consulta = "SELECT Ventas.ID,Ventas.Hora,Ventas.Precio,Ventas.TipoPago,cliente.Nombre FROM Ventas INNER JOIN cliente ON Ventas.IDCliente = cliente.ID WHERE Ventas.ID=" + id;
-
+            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID WHERE Ventas.ID=" + id;
+ 
             ResultSet respuesta = statement.executeQuery(consulta);
 
             if (!respuesta.next()) {
@@ -71,9 +72,10 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
             String comprador = respuesta.getString("Comprador");
             String fecha = respuesta.getString("Fecha");
             String hora = respuesta.getString("Hora");
+            int cantidad = respuesta.getInt("Cantidad");
             float precio = respuesta.getFloat("Precio");
             String tipoPago = respuesta.getString("TipoPago");
-            Venta venta = new Venta(id, producto, comprador, fecha, hora, precio, tipoPago);
+            Venta venta = new Venta(id, producto, comprador, fecha, hora, cantidad, precio, tipoPago);
             conexion.close();
             return venta;
         } catch (SQLException ex) {
