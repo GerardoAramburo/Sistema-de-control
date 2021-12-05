@@ -97,6 +97,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         try {
             String consulta = "INSERT INTO Ventas(Fecha, Hora, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
             statement.executeUpdate(consulta);
+            conexion.close();
             System.out.println("Venta insertada correctamente");
         } catch (SQLException ex) {
             System.out.println("Error al insertar la Venta");
@@ -107,5 +108,51 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
     public void eliminarVenta(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public void eliminarVentas(ArrayList<Venta> ventas) {
+        if (ventas.isEmpty()) {
+            return;
+        }
+        if (!isConectado()) {
+            conectarDB();
+        }
+        try {
+            Venta producto1 = ventas.get(0);
+            String consulta = "DELETE FROM Ventas Where ID=" + producto1.getId();
+            ventas.remove(0);
+            
+            for (Venta producto : ventas) {
+                consulta += " OR ID=" + producto.getId();
+            }
+            
+            statement.executeUpdate(consulta);
+            conexion.close();
+            System.out.println("#Ventas eliminados correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al eliminar los productos");
+            ex.printStackTrace();
+        }
+    }
+    
+    public void insertarVentas(Venta[] ventas) {
+        if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            for (Venta venta: ventas) {
+                //String consulta = "INSERT INTO Ventas(Fecha, Hora, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
 
+                //statement.addBatch(consulta);
+            }
+            statement.executeLargeBatch();
+            conexion.close();
+
+            System.out.println("#Ventas insertadas correctamente");
+
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar el producto");
+            ex.printStackTrace();
+        }
+    }
 }

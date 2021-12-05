@@ -99,13 +99,59 @@ public class ClientesDaoImpl extends ConexionDAO implements IClientesDao {
             String consulta = "INSERT INTO cliente(Nombre, Apellidos, Domicilio, Email) VALUES('"+ cliente.getNombre() +"', '"
                     + cliente.getApellidos() +"',"+ "'" + cliente.getDomicilio() + "'" + ","+ "'" +cliente.getEmail() +"')";
             statement.executeUpdate(consulta);
-            
+            conexion.close();
             System.out.println("#Cliente insertado correctamente");
         } catch (SQLException ex) {
             System.out.println("Error al insertar el cliente");
             ex.printStackTrace();
         }
     }
+    
+    public void insertarClientes(Cliente[] clientes) {
+        if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            for (Cliente cliente: clientes) {
+                String consulta = "INSERT INTO cliente(Nombre, Apellidos, Domicilio, Email) VALUES('"+ cliente.getNombre() +"', '"
+                    + cliente.getApellidos() +"',"+ "'" + cliente.getDomicilio() + "'" + ","+ "'" +cliente.getEmail() +"')";
+                statement.addBatch(consulta);
+            }
+            statement.executeLargeBatch();
+            conexion.close();
+            System.out.println("#Clientes insertadas correctamente");
 
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar el cliente");
+            ex.printStackTrace();
+        }
+    }
+    
+    public void eliminarClientes(ArrayList<Cliente> clientes) {
+        if (clientes.isEmpty()) {
+            return;
+        }
+        if (!isConectado()) {
+            conectarDB();
+        }
+        try {
+            Cliente producto1 = clientes.get(0);
+            String consulta = "DELETE FROM cliente Where ID=" + producto1.getId();
+            clientes.remove(0);
+            
+            for (Cliente cliente : clientes) {
+                consulta += " OR ID=" + cliente.getId();
+            }
+            
+            
+            statement.executeUpdate(consulta);
+            conexion.close();
+            System.out.println("#Clientes eliminados correctamente");
+        } catch (SQLException ex) {
+            System.out.println("Error al eliminar los productos");
+            ex.printStackTrace();
+        }
+    }
 }
 

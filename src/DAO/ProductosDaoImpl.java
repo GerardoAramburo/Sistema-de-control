@@ -141,6 +141,28 @@ public class ProductosDaoImpl extends ConexionDAO implements IProductosDao {
                     + producto.getDescripcion() +"',"+ producto.getPrecio() +","+ producto.getCantidad() +")";
             statement.executeUpdate(consulta);
             System.out.println("#Producto insertado correctamente");
+            conexion.close();
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar el producto");
+            ex.printStackTrace();
+        }
+    }
+    
+    public void insertarProductos(Producto[] productos) {
+        if (!isConectado()) {
+            conectarDB();
+        }
+        
+        try {
+            for (Producto producto: productos) {
+                String consulta = "INSERT INTO Productos(Nombre, Descripcion, Precio, Cantidad) VALUES('"+ producto.getNombre() +"', '"
+                        + producto.getDescripcion() +"',"+ producto.getPrecio() +","+ producto.getCantidad() +");\n";
+                statement.addBatch(consulta);
+            }
+            statement.executeLargeBatch();
+            conexion.close();
+            System.out.println("#Productos insertadas correctamente");
+            
         } catch (SQLException ex) {
             System.out.println("Error al insertar el producto");
             ex.printStackTrace();

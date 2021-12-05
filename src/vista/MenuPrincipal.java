@@ -487,6 +487,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         for (Venta nuevoProducto : nuevasVentasArr) {
                             ventas.add(nuevoProducto);
                         }
+                        
+                        
                     }
                 }
                 break;
@@ -516,6 +518,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         for (Producto nuevoProducto : nuevosProductosArr) {
                             productos.add(nuevoProducto);
                         }
+                        ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
+                        accesoProductos.insertarProductos(nuevosProductosArr);
                     }
                 }
                 break;
@@ -544,6 +548,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         for (Cliente nuevoProducto : nuevosClientesArr) {
                             clientes.add(nuevoProducto);
                         }
+                        ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
+                        accesoClientes.insertarClientes(nuevosClientesArr);
                     }
                 }
                 break;
@@ -627,9 +633,19 @@ public class MenuPrincipal extends javax.swing.JFrame {
         int[] filasAEliminar = mainTable.getSelectedRows();
         switch (seccionSeleccionada) {
             case CLIENTES:
-                JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
+                ArrayList<Cliente> clientesAEliminar = new ArrayList<>();
+                for (int filaAEliminar : filasAEliminar) {
+                    clientesAEliminar.add(clientes.get(filaAEliminar));
+                }
+                for (Cliente clienteAEliminar : clientesAEliminar) {
+                    clientes.remove(clienteAEliminar);
+                }
+                if (!clientesAEliminar.isEmpty()) {
+                    reproducirSonido("/370849__cabled-mess__clack-minimal-ui-sounds.wav");
+                    ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
+                    accesoClientes.eliminarClientes(clientesAEliminar);
+                }
                 break;
-
             case PRODUCTOS:
                 ArrayList<Producto> productosAEliminar = new ArrayList<>();
                 for (int filaAEliminar : filasAEliminar) {
@@ -640,12 +656,26 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 }
                 if (!productosAEliminar.isEmpty()) {
                     reproducirSonido("/370849__cabled-mess__clack-minimal-ui-sounds.wav");
+                    ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
+                    accesoProductos.eliminarProductos(productosAEliminar);
                 }
-                ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
-                accesoProductos.eliminarProductos(productosAEliminar);
                 break;
             case VENTAS:
-                JOptionPane.showMessageDialog(this, "Funcion no implementada", "Error", JOptionPane.ERROR_MESSAGE);
+                ArrayList<Venta> ventasAEliminar = new ArrayList<>();
+                for (int filaAEliminar : filasAEliminar) {
+                    ventasAEliminar.add(ventas.get(filaAEliminar));
+                }
+                
+                for (Venta ventaAEliminar : ventasAEliminar) {
+                    ventas.remove(ventaAEliminar);
+                }
+                if (!ventasAEliminar.isEmpty()) {
+                    reproducirSonido("/370849__cabled-mess__clack-minimal-ui-sounds.wav");
+                                    
+                    VentasDaoImpl accesoVentas = new VentasDaoImpl();
+                    accesoVentas.eliminarVentas(ventasAEliminar);
+                }
+
                 break;
             default:
                 break;
