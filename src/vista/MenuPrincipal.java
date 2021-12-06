@@ -175,7 +175,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     model.addColumn(nombreColumna);
                 }
                 for (Venta venta : ventas) {
-                    model.addRow(new Object[]{venta.getProducto(), venta.getComprador(), venta.getFecha(), venta.getHora(), venta.getCantidad(), venta.getPrecio(), venta.getTipoPago()});
+                    model.addRow(new Object[]{venta.getProducto(), venta.getComprador(), venta.getFecha(), venta.getHora(), venta.getPrecio(), venta.getCantidad(), venta.getTipoPago()});
                 }
                 break;
             }

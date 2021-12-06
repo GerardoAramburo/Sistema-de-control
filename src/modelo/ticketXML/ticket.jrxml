@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticket" pageWidth="300" pageHeight="300" columnWidth="260" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="434cac2c-2c1a-460a-b9f5-d1da6398427c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="Empty Dataset1" uuid="33a96078-716f-4141-b619-3ee16770a3c8"/>
+	<parameter name="nombre" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="metodoPago" class="java.lang.String"/>
+	<parameter name="nombreProducto" class="java.lang.String"/>
+	<parameter name="cantidadProducto" class="java.lang.String"/>
+	<parameter name="precioProducto" class="java.lang.String"/>
+	<parameter name="totalProducto" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="33" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="3" width="260" height="30" backcolor="#344CB7" uuid="84665f97-a2c0-4e88-880b-cecd1832be1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ticket tienda de videojuegos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="113" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="4" width="110" height="16" backcolor="#030303" uuid="1af0a78f-885c-49c0-8b48-69ef241eb4ac"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Datos del cliente:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="24" width="41" height="16" uuid="90a67b31-e882-4d7c-9554-351ac3daf85c"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="110" height="16" backcolor="#030303" uuid="771e7584-10b2-44c2-88dc-ac65bdb73e09"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Informacion ticket:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="66" width="41" height="16" uuid="8fd1e546-227d-49ba-8e1c-c94d7c8b15c9"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="130" y="66" width="41" height="24" uuid="f4dffed3-c945-4acd-ae05-fa2f61386987"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Metodo de pago:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="96" width="110" height="16" backcolor="#030303" uuid="eef16eae-c0dc-4b2e-9b66-64f59d74c44d"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Producto comprado:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="36" y="24" width="188" height="16" uuid="213b31e5-1d4e-445d-bb64-f2247e8e27a9"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="66" width="90" height="16" uuid="686f9186-1e32-4b68-ab2e-dfa6c0b41c2a"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="173" y="67" width="86" height="26" uuid="b4c0089f-5beb-46bd-8463-ccedccf2080b"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{metodoPago}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="46" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<rectangle>
+				<reportElement x="0" y="0" width="261" height="20" backcolor="#344CB7" uuid="109c3781-b7a3-471c-81b7-92df89fdd685"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="4" y="0" width="80" height="20" forecolor="#FFFFFF" uuid="7be30b20-fd37-4c59-88fd-1022a91298c0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="44" height="20" forecolor="#FFFFFF" uuid="6f17beb6-8529-4d3b-9a5f-36cccba2353a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="0" width="44" height="20" forecolor="#FFFFFF" uuid="c1f54360-a4a9-4cf8-9b81-16466c4466c7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="0" width="44" height="20" forecolor="#FFFFFF" uuid="c6674001-7b65-4bb2-bcce-a453682f1710"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="22" width="84" height="20" uuid="68e52fb4-16a5-4a54-906b-0dbe91909dd1"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nombreProducto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="22" width="44" height="20" uuid="181d8284-79e6-4ff8-8a3c-ef3afe21551f"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cantidadProducto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="22" width="44" height="20" uuid="1d631796-5ee8-4ef0-a489-a3e784bdaebc"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{precioProducto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="193" y="22" width="68" height="20" uuid="83076119-b568-45e1-9a2b-48a5d5f43dc8"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalProducto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="6" width="260" height="21" uuid="3f8a6a96-b9af-4a56-b1cf-2b671a0d55dc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Gracias por su preferencia!]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>
