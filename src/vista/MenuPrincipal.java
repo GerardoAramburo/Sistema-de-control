@@ -460,7 +460,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_clientesBtnMouseExited
 
     private void importarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importarBtnActionPerformed
-        boolean error;
         switch (seccionSeleccionada) {
             case VENTAS:
                 JFileChooser seleccionadorDeArchivo = new JFileChooser();
