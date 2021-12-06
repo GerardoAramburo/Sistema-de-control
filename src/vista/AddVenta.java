@@ -27,7 +27,7 @@ public class AddVenta extends javax.swing.JFrame {
     ArrayList<Producto> productos = new ArrayList<>();
     ArrayList<Cliente> clientes = new ArrayList<>();
     ArrayList<Venta> ventas = new ArrayList<>();
-    
+
     ProductosDaoImpl accesoProductos = new ProductosDaoImpl();
     ClientesDaoImpl accesoClientes = new ClientesDaoImpl();
     VentasDaoImpl accesoVentas = new VentasDaoImpl();
@@ -44,8 +44,6 @@ public class AddVenta extends javax.swing.JFrame {
         parent.setEnabled(false);
         initComponents();
 
-        
-        
         productos = accesoProductos.getProductos();
         clientes = accesoClientes.getClientes();
         for (Producto nombreProducto : productos) {
@@ -54,7 +52,8 @@ public class AddVenta extends javax.swing.JFrame {
         for (Cliente nombreCliente : clientes) {
             jComboBox1.addItem(nombreCliente.getNombre() + " " + nombreCliente.getApellidos());
         }
-        lblStock.setText(""+productos.get(jComboBox2.getSelectedIndex()).getCantidad());
+        lblStock.setText("" + productos.get(jComboBox2.getSelectedIndex()).getCantidad());
+        
         centrarVentana();
 
     }
@@ -116,12 +115,6 @@ public class AddVenta extends javax.swing.JFrame {
         jComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox3ActionPerformed(evt);
-            }
-        });
-
-        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSpinner1StateChanged(evt);
             }
         });
 
@@ -198,52 +191,52 @@ public class AddVenta extends javax.swing.JFrame {
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
                     .addComponent(lblStock))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAgregar)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        if((int) jSpinner1.getValue() > 0){
-            if((int) jSpinner1.getValue() <= productos.get(jComboBox2.getSelectedIndex()).getCantidad()){
+        if ((int) jSpinner1.getValue() > 0) {
+            if ((int) jSpinner1.getValue() <= productos.get(jComboBox2.getSelectedIndex()).getCantidad()) {
                 Date fecha = new Date();
-        Date hora = new Date();
-        String strDateFormat = "YYYY-MM-dd";
-        String strHourFormat = ("hh:mm:ss");
-        SimpleDateFormat fecha2 = new SimpleDateFormat(strDateFormat);
-        SimpleDateFormat hora2 = new SimpleDateFormat(strHourFormat);
-        
-        int cantidad = (int) jSpinner1.getValue();
-        float precio = productos.get(jComboBox2.getSelectedIndex()).getPrecio() * cantidad;
-        int idCliente = clientes.get(jComboBox1.getSelectedIndex()).getId();
-        int idProducto = productos.get(jComboBox2.getSelectedIndex()).getId();
-        
-        String tipoPago = (String) jComboBox3.getSelectedItem();
-        
-        Venta ventaAInsertar = new Venta(0, productos.get(jComboBox2.getSelectedIndex()).getNombre(), clientes.get(jComboBox1.getSelectedIndex()).getNombre(), fecha2.format(fecha), hora2.format(hora), cantidad, precio, tipoPago);
-        Cliente cliente = clientes.get(jComboBox1.getSelectedIndex());
-        Producto producto = productos.get(jComboBox2.getSelectedIndex());
-       ((MenuPrincipal) parent).recargarTabla(null, ventaAInsertar, null);
-        Thread thread = new Thread() {
-            public void run() {
-                accesoVentas.insertarVenta(ventaAInsertar, idProducto, idCliente);
-            }
-        };
-        thread.start();
-        producto.setCantidad(producto.getCantidad()-(int)jSpinner1.getValue());
-        new Factura(this, ventaAInsertar, producto, cliente).setVisible(true);
-        this.dispose();
-            }else{
+                Date hora = new Date();
+                String strDateFormat = "YYYY-MM-dd";
+                String strHourFormat = ("hh:mm:ss");
+                SimpleDateFormat fecha2 = new SimpleDateFormat(strDateFormat);
+                SimpleDateFormat hora2 = new SimpleDateFormat(strHourFormat);
+
+                int cantidad = (int) jSpinner1.getValue();
+                float precio = productos.get(jComboBox2.getSelectedIndex()).getPrecio() * cantidad;
+                int idCliente = clientes.get(jComboBox1.getSelectedIndex()).getId();
+                int idProducto = productos.get(jComboBox2.getSelectedIndex()).getId();
+
+                String tipoPago = (String) jComboBox3.getSelectedItem();
+
+                Venta ventaAInsertar = new Venta(0, productos.get(jComboBox2.getSelectedIndex()).getNombre(), clientes.get(jComboBox1.getSelectedIndex()).getNombre(), fecha2.format(fecha), hora2.format(hora), cantidad, precio, tipoPago, idProducto, idCliente);
+                Cliente cliente = clientes.get(jComboBox1.getSelectedIndex());
+                Producto producto = productos.get(jComboBox2.getSelectedIndex());
+                ((MenuPrincipal) parent).recargarTabla(null, ventaAInsertar, null);
+                Thread thread = new Thread() {
+                    public void run() {
+                        accesoVentas.insertarVenta(ventaAInsertar, idProducto, idCliente);
+                    }
+                };
+                thread.start();
+                producto.setCantidad(producto.getCantidad() - (int) jSpinner1.getValue());
+                new Factura(this, ventaAInsertar, producto, cliente).setVisible(true);
+                this.dispose();
+            } else {
                 JOptionPane.showMessageDialog(this, "No hay suficiente producto en Stock", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(this, "Tienes que añadir al menos un Producto", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
@@ -262,12 +255,8 @@ public class AddVenta extends javax.swing.JFrame {
         parent.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
 
-    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jSpinner1StateChanged
-
     private void jComboBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox2ItemStateChanged
-        lblStock.setText(""+productos.get(jComboBox2.getSelectedIndex()).getCantidad());
+        lblStock.setText("" + productos.get(jComboBox2.getSelectedIndex()).getCantidad());
     }//GEN-LAST:event_jComboBox2ItemStateChanged
 
     private void centrarVentana() {

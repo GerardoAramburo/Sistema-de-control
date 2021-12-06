@@ -28,7 +28,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         try {
             ArrayList<Venta> ventas = new ArrayList<>();
 
-            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID";
+            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago, Ventas.IDProducto, Ventas.IDCliente FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID";
 
             ResultSet respuesta = statement.executeQuery(consulta);
 
@@ -41,7 +41,9 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
                 int cantidad = respuesta.getInt("Cantidad");
                 float precio = respuesta.getFloat("Precio");
                 String tipoPago = respuesta.getString("TipoPago");
-                Venta venta = new Venta(id, producto, comprador, fecha, hora, cantidad, precio, tipoPago);
+                int idProducto = respuesta.getInt("IDProducto");
+                int idCliente = respuesta.getInt("IDCliente");
+                Venta venta = new Venta(id, producto, comprador, fecha, hora, cantidad, precio, tipoPago, idProducto, idCliente);
                 ventas.add(venta);
             }
             conexion.close();
@@ -60,7 +62,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         }
 
         try {
-            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID WHERE Ventas.ID=" + id;
+            String consulta = "SELECT Ventas.ID, Productos.nombre AS Producto, CONCAT(cliente.Nombre,' ',cliente.Apellidos) AS Comprador, Ventas.Fecha, Ventas.Hora, Ventas.Cantidad, Ventas.Precio, Ventas.TipoPago, Ventas.IDProducto, Ventas.IDCliente FROM Ventas INNER JOIN Productos ON Ventas.IDProducto = Productos.ID INNER JOIN cliente ON Ventas.IDCliente = cliente.ID WHERE Ventas.ID=" + id;
  
             ResultSet respuesta = statement.executeQuery(consulta);
 
@@ -68,14 +70,16 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
                 return null;
             }
 
-            String producto = respuesta.getString("Producto");
-            String comprador = respuesta.getString("Comprador");
-            String fecha = respuesta.getString("Fecha");
-            String hora = respuesta.getString("Hora");
-            int cantidad = respuesta.getInt("Cantidad");
-            float precio = respuesta.getFloat("Precio");
-            String tipoPago = respuesta.getString("TipoPago");
-            Venta venta = new Venta(id, producto, comprador, fecha, hora, cantidad, precio, tipoPago);
+                String producto = respuesta.getString("Producto");
+                String comprador = respuesta.getString("Comprador");
+                String fecha = respuesta.getString("Fecha");
+                String hora = respuesta.getString("Hora");
+                int cantidad = respuesta.getInt("Cantidad");
+                float precio = respuesta.getFloat("Precio");
+                String tipoPago = respuesta.getString("TipoPago");
+                int idProducto = respuesta.getInt("IDProducto");
+                int idCliente = respuesta.getInt("IDCliente");
+            Venta venta = new Venta(id, producto ,comprador, fecha, hora, cantidad, precio, tipoPago, idProducto, idCliente);
             conexion.close();
             return venta;
         } catch (SQLException ex) {
@@ -95,7 +99,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         }
         
         try {
-            String consulta = "INSERT INTO Ventas(Fecha, Hora, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
+            String consulta = "INSERT INTO Ventas(Fecha, Hora, Cantidad, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", "+venta.getCantidad()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
             statement.executeUpdate(consulta);
             conexion.close();
             System.out.println("Venta insertada correctamente");
@@ -141,9 +145,9 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         
         try {
             for (Venta venta: ventas) {
-                //String consulta = "INSERT INTO Ventas(Fecha, Hora, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+idProducto+","+idCliente+")";
+                String consulta = "INSERT INTO Ventas(Fecha, Hora, Cantidad, Precio, TipoPago, IDProducto, IDCliente) VALUES('"+venta.getFecha()+"', '"+venta.getHora()+"',"+venta.getCantidad()+", "+venta.getPrecio()+", '"+venta.getTipoPago()+"',"+venta.getIdProducto()+","+venta.getIdCliente()+")";
 
-                //statement.addBatch(consulta);
+                statement.addBatch(consulta);
             }
             statement.executeLargeBatch();
             conexion.close();

@@ -276,10 +276,10 @@ public class Factura extends javax.swing.JFrame {
         lblDomicilio.setText(cliente.getDomicilio());
         lblEmail.setText(cliente.getEmail());
         lblFecha.setText(venta.getFecha() + " : " + venta.getHora());
-        lblNombre.setText(venta.getComprador());
+        lblNombre.setText(cliente.getNombre() + " " + cliente.getApellidos());
         lblTipoPago.setText(venta.getTipoPago());
         tblProducto.setModel(model);
-        model.addRow(new Object[]{venta.getProducto(), venta.getCantidad(), venta.getPrecio(), venta.getPrecio() * venta.getCantidad()});
+        model.addRow(new Object[]{producto.getNombre(), venta.getCantidad(), venta.getPrecio(), venta.getPrecio() * venta.getCantidad()});
     }
     /**
      * @param args the command line arguments

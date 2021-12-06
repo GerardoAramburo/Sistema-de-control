@@ -487,8 +487,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         for (Venta nuevoProducto : nuevasVentasArr) {
                             ventas.add(nuevoProducto);
                         }
-                        
-                        
+                            VentasDaoImpl accesoVentas = new VentasDaoImpl();
+                            accesoVentas.insertarVentas(nuevasVentasArr);
+                            System.out.println("Test");
                     }
                 }
                 break;

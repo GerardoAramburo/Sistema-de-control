@@ -9,9 +9,11 @@ public class Venta {
     private String hora;
     private int cantidad;
     private float precio;
-    private String TipoPago;
+    private String tipoPago;
+    private int idProducto;
+    private int idCliente;
 
-    public Venta(int id, String producto, String comprador, String fecha, String hora, int cantidad, float precio, String TipoPago) {
+    public Venta(int id, String producto, String comprador, String fecha, String hora, int cantidad, float precio, String tipoPago, int idProducto, int idCliente) {
         this.id = id;
         this.producto = producto;
         this.comprador = comprador;
@@ -19,15 +21,9 @@ public class Venta {
         this.hora = hora;
         this.cantidad = cantidad;
         this.precio = precio;
-        this.TipoPago = TipoPago;
-    }
-
-    public String getTipoPago() {
-        return TipoPago;
-    }
-
-    public void setTipoPago(String TipoPago) {
-        this.TipoPago = TipoPago;
+        this.tipoPago = tipoPago;
+        this.idProducto = idProducto;
+        this.idCliente = idCliente;
     }
 
     public int getId() {
@@ -77,7 +73,7 @@ public class Venta {
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
-    
+
     public float getPrecio() {
         return precio;
     }
@@ -86,4 +82,28 @@ public class Venta {
         this.precio = precio;
     }
 
+    public String getTipoPago() {
+        return tipoPago;
+    }
+
+    public void setTipoPago(String tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
+    }
+    
 }
