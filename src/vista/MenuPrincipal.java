@@ -460,7 +460,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_clientesBtnMouseExited
 
     private void importarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importarBtnActionPerformed
-
+        boolean error;
         switch (seccionSeleccionada) {
             case VENTAS:
                 JFileChooser seleccionadorDeArchivo = new JFileChooser();
@@ -484,12 +484,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     String texto = leerArchivo(rutaCompleta);
                     Venta[] nuevasVentasArr = new Gson().fromJson(texto, Venta[].class);
                     if (JOptionPane.showConfirmDialog(this, "Se añadiran " + nuevasVentasArr.length + " ventas, ¿Estas seguro?", "Confirmacion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                        for (Venta nuevoProducto : nuevasVentasArr) {
-                            ventas.add(nuevoProducto);
+                        VentasDaoImpl accesoVentas = new VentasDaoImpl();
+                        if (accesoVentas.insertarVentas(nuevasVentasArr)) {
+                            for (Venta nuevoProducto : nuevasVentasArr) {
+                                ventas.add(nuevoProducto);
+                            }
+
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Error al importar ventas, asegurese de que los productos y clientes asociados a las ventas no se hayan eliminado", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                            VentasDaoImpl accesoVentas = new VentasDaoImpl();
-                            accesoVentas.insertarVentas(nuevasVentasArr);
-                            System.out.println("Test");
+
                     }
                 }
                 break;
@@ -666,13 +670,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 for (int filaAEliminar : filasAEliminar) {
                     ventasAEliminar.add(ventas.get(filaAEliminar));
                 }
-                
+
                 for (Venta ventaAEliminar : ventasAEliminar) {
                     ventas.remove(ventaAEliminar);
                 }
                 if (!ventasAEliminar.isEmpty()) {
                     reproducirSonido("/370849__cabled-mess__clack-minimal-ui-sounds.wav");
-                                    
+
                     VentasDaoImpl accesoVentas = new VentasDaoImpl();
                     accesoVentas.eliminarVentas(ventasAEliminar);
                 }

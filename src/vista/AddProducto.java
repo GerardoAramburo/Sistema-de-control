@@ -222,11 +222,13 @@ public class AddProducto extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         this.setAlwaysOnTop(false);
         parent.setEnabled(true);
+        parent.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         this.setAlwaysOnTop(false);
         parent.setEnabled(true);
+        parent.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
 
     private void centrarVentana() {

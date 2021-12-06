@@ -138,7 +138,7 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
         }
     }
     
-    public void insertarVentas(Venta[] ventas) {
+    public boolean insertarVentas(Venta[] ventas) {
         if (!isConectado()) {
             conectarDB();
         }
@@ -153,10 +153,11 @@ public class VentasDaoImpl extends ConexionDAO implements IVentasDao {
             conexion.close();
 
             System.out.println("#Ventas insertadas correctamente");
-
+            return true;
         } catch (SQLException ex) {
             System.out.println("Error al insertar el producto");
             ex.printStackTrace();
+            return false;
         }
     }
 }

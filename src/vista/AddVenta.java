@@ -43,18 +43,8 @@ public class AddVenta extends javax.swing.JFrame {
 
         parent.setEnabled(false);
         initComponents();
-
-        productos = accesoProductos.getProductos();
-        clientes = accesoClientes.getClientes();
-        for (Producto nombreProducto : productos) {
-            jComboBox2.addItem(nombreProducto.getNombre());
-        }
-        for (Cliente nombreCliente : clientes) {
-            jComboBox1.addItem(nombreCliente.getNombre() + " " + nombreCliente.getApellidos());
-        }
-        lblStock.setText("" + productos.get(jComboBox2.getSelectedIndex()).getCantidad());
-        
         centrarVentana();
+        preparacion();
 
     }
 
@@ -79,7 +69,8 @@ public class AddVenta extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         lblStock = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Añadir Venta");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
@@ -200,6 +191,7 @@ public class AddVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    if(!(productos.isEmpty() || clientes.isEmpty())){
         if ((int) jSpinner1.getValue() > 0) {
             if ((int) jSpinner1.getValue() <= productos.get(jComboBox2.getSelectedIndex()).getCantidad()) {
                 Date fecha = new Date();
@@ -236,6 +228,11 @@ public class AddVenta extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Tienes que añadir al menos un Producto", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } else{
+        JOptionPane.showMessageDialog(this, "Error, datos faltantes", "Error", JOptionPane.ERROR_MESSAGE);
+        this.dispose();
+    }
+        
 
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -264,6 +261,22 @@ public class AddVenta extends javax.swing.JFrame {
         Dimension tamanoVentana = this.getSize();
         Point posicionParent = parent.getLocation();
         this.setLocation(posicionParent.x + (tamanoVentanaParent.width / 2) - (tamanoVentana.width / 2), posicionParent.y + (tamanoVentanaParent.height / 2) - (tamanoVentana.height / 2));
+    }
+    private void preparacion() {
+        productos = accesoProductos.getProductos();
+        clientes = accesoClientes.getClientes();
+        if(!(productos.isEmpty() || clientes.isEmpty())){
+          for (Producto nombreProducto : productos) {
+            jComboBox2.addItem(nombreProducto.getNombre());
+        }
+        for (Cliente nombreCliente : clientes) {
+            jComboBox1.addItem(nombreCliente.getNombre() + " " + nombreCliente.getApellidos());
+        }
+        lblStock.setText("" + productos.get(jComboBox2.getSelectedIndex()).getCantidad());  
+        }else{
+            
+            JOptionPane.showMessageDialog(this, "No hay ningún Cliente o Producto, Favor de añadir al menos uno antes de iniciar una venta", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     /**
      * @param args the command line arguments
