@@ -42,6 +42,7 @@ public class TicketPDF {
 
         JasperViewer view = new JasperViewer(jprint, false);
         view.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        view.setAlwaysOnTop(true);
         view.setVisible(true);
     }
 }
